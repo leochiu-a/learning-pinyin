@@ -67,12 +67,25 @@ kbd { font-family: var(--f-key); font-size: .9em; padding: 1px 6px; border: 1px 
 /* app layout */
 .app { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 28px; max-width: 1140px; margin: 0 auto; padding: 12px 20px 48px; }
 @media (max-width: 860px) { .app { grid-template-columns: minmax(0, 1fr); gap: 16px; } }
+/* 桌機：整個 App 剛好塞滿視窗高度，步道和內容各自捲動，練習畫面隨螢幕高度縮放 */
+@media (min-width: 861px) {
+  body { height: 100vh; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
+  .top { flex: none; width: 100%; padding-top: clamp(10px, 2vh, 20px); }
+  .app { flex: 1 1 auto; min-height: 0; width: 100%; padding-bottom: clamp(12px, 2.4vh, 28px); }
+  .app > nav { min-height: 0; overflow-y: auto; scrollbar-width: thin; }
+  .panel { min-height: 0; overflow-y: auto; scrollbar-width: thin; }
+}
+@media (min-width: 1600px) and (min-height: 950px) {
+  body { font-size: 16px; }
+  .top, .app { max-width: 1400px; }
+  .app { grid-template-columns: 280px minmax(0, 1fr); gap: 36px; }
+}
 
 /* step trail */
 .trail { position: relative; margin: 0; padding: 0; list-style: none; }
 .trail::before { content: ""; position: absolute; left: 17px; top: 18px; bottom: 18px; border-left: 2px dotted var(--key-edge); }
 .trail li { position: relative; }
-.step { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; border: 0; background: none; padding: 7px 8px 7px 0; border-radius: 10px; }
+.step { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; border: 0; background: none; padding: clamp(3px, .6vh, 7px) 8px clamp(3px, .6vh, 7px) 0; border-radius: 10px; }
 .step:hover:not(:disabled) .step-t { color: var(--py); }
 .step:disabled { cursor: not-allowed; opacity: .5; }
 .node { flex: none; width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; font-family: var(--f-key); font-size: 13px; font-weight: 700; background: var(--paper); border: 2px solid var(--key-edge); color: var(--muted); position: relative; z-index: 1; }
@@ -92,11 +105,14 @@ kbd { font-family: var(--f-key); font-size: .9em; padding: 1px 6px; border: 1px 
 }
 
 /* main panels */
-.panel { background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 28px clamp(16px, 4vw, 36px); min-width: 0; }
+.panel { background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: clamp(14px, 2.4vh, 28px) clamp(16px, 4vw, 36px); min-width: 0; }
+.panel.practice { display: flex; flex-direction: column; }
 .eyebrow { font-size: 12px; letter-spacing: .12em; color: var(--muted); margin: 0 0 4px; }
-.panel h2 { margin: 0 0 6px; font-family: var(--f-han); font-size: clamp(26px, 4vw, 34px); line-height: 1.25; text-wrap: balance; }
+.panel h2 { margin: 0 0 6px; font-family: var(--f-han); font-size: clamp(24px, min(4vw, 4.2vh), 34px); line-height: 1.25; text-wrap: balance; }
 .lede { margin: 0 0 20px; max-width: 62ch; color: var(--muted); }
-.tabs { display: flex; gap: 20px; border-bottom: 1px solid var(--line); margin: 0 0 24px; }
+.lhead { flex: none; display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 4px 24px; border-bottom: 1px solid var(--line); margin: 0 0 clamp(14px, 2.6vh, 24px); }
+.lhead h2 { margin-bottom: 8px; }
+.tabs { display: flex; gap: 20px; }
 .tabs button { border: 0; background: none; padding: 8px 0; border-bottom: 2px solid transparent; margin-bottom: -1px; color: var(--muted); font-weight: 500; }
 .tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--ink); }
 
@@ -125,21 +141,23 @@ kbd { font-family: var(--f-key); font-size: .9em; padding: 1px 6px; border: 1px 
 .go small { color: var(--muted); }
 
 /* practice */
-.pbar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; margin-bottom: 18px; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.pbar { flex: none; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; margin-bottom: clamp(10px, 2vh, 18px); font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.pbar .tools { display: flex; flex-wrap: wrap; gap: 6px; margin-left: auto; }
+.btn.sm { padding: 4px 12px; font-size: 13px; }
 .bar { flex: 1 1 140px; height: 6px; border-radius: 3px; background: var(--paper); overflow: hidden; }
 .bar i { display: block; height: 100%; background: var(--py); transition: width .3s; }
 .toggle { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
 .toggle input { accent-color: var(--py); width: 16px; height: 16px; }
 .toggle.off { opacity: .55; cursor: default; }
-.stage { position: relative; border: 1px solid var(--line); border-radius: 12px; padding: 26px 16px 22px; display: flex; flex-direction: column; align-items: center; gap: 18px; cursor: text; background:
+.stage { flex: 1 0 auto; position: relative; border: 1px solid var(--line); border-radius: 12px; padding: clamp(10px, 2vh, 32px) 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: clamp(6px, 1.3vh, 22px); cursor: text; background:
   repeating-linear-gradient(to bottom, transparent 0 31px, var(--paper) 31px 32px); }
 .prompt { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; align-items: flex-end; }
 .glyph { display: flex; flex-direction: column; align-items: center; gap: 2px; }
-.glyph .han { font-family: var(--f-han); font-size: clamp(48px, 9vw, 72px); line-height: 1.05; }
-.glyph .zy { font-size: 18px; line-height: 1.2; }
-.prompt .solo { font-size: clamp(64px, 12vw, 96px); line-height: 1; }
-.ask { font-size: 13px; color: var(--muted); margin: -8px 0 0; }
-.typed { min-height: 58px; display: flex; align-items: center; justify-content: center; flex-wrap: wrap; font-family: var(--f-key); font-size: clamp(30px, 6vw, 42px); font-weight: 700; letter-spacing: .04em; max-width: 100%; }
+.glyph .han { font-family: var(--f-han); font-size: clamp(40px, min(9vw, 8vh), 112px); line-height: 1.05; }
+.glyph .zy { font-size: clamp(15px, 2.2vh, 24px); line-height: 1.2; }
+.prompt .solo { font-size: clamp(52px, min(12vw, 12vh), 140px); line-height: 1; }
+.ask { font-size: 13px; color: var(--muted); margin: 0; }
+.typed { min-height: 1.4em; display: flex; align-items: center; justify-content: center; flex-wrap: wrap; font-family: var(--f-key); font-size: clamp(26px, min(6vw, 5.2vh), 56px); font-weight: 700; letter-spacing: .04em; max-width: 100%; }
 .typed .ok { color: var(--py); }
 .typed .bad { color: var(--bad); background: var(--bad-soft); border-radius: 4px; }
 .typed .ph { color: var(--muted); font-size: 16px; font-weight: 500; font-family: var(--f-ui); letter-spacing: 0; }
@@ -148,26 +166,25 @@ kbd { font-family: var(--f-key); font-size: .9em; padding: 1px 6px; border: 1px 
 .typed.win { color: var(--py); }
 .typed.shake { animation: shake .3s; }
 @keyframes shake { 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
-.answer { font-family: var(--f-py); font-size: 22px; color: var(--py); min-height: 1.4em; margin-top: -10px; }
+.answer { font-family: var(--f-py); font-size: clamp(18px, 2.6vh, 26px); color: var(--py); min-height: 1.4em; margin-top: calc(-1 * clamp(4px, 1vh, 10px)); }
 #ime { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; font-size: 16px; border: 0; cursor: text; }
-.hint { margin-top: 14px; padding: 12px 16px; border-radius: 10px; background: var(--bad-soft); border-left: 3px solid var(--bad); font-size: 14px; }
+.hint { flex: none; margin-top: clamp(8px, 1.6vh, 14px); padding: 8px 16px; line-height: 1.5; border-radius: 10px; background: var(--bad-soft); border-left: 3px solid var(--bad); font-size: 14px; }
 .hint.reveal { background: var(--py-soft); border-left-color: var(--py); }
 .hint b { font-family: var(--f-py); }
-.row-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; align-items: center; margin-top: 14px; }
-.row-actions .btn { padding: 7px 16px; font-size: 14px; }
 
 /* keyboard */
-.kbd { margin-top: 20px; display: grid; gap: 6px; justify-content: center; overflow-x: auto; padding-bottom: 4px; }
+.kbd { flex: none; margin-top: clamp(10px, 2vh, 22px); display: grid; gap: 6px; justify-content: center; overflow-x: auto; padding-bottom: 4px; }
 .krow { display: flex; gap: 5px; }
 .krow:nth-child(2) { padding-left: 18px; } .krow:nth-child(3) { padding-left: 30px; } .krow:nth-child(4) { padding-left: 50px; }
-.k { position: relative; width: clamp(28px, 6.4vw, 44px); height: clamp(34px, 7vw, 46px); border-radius: 7px; background: var(--key); border: 1px solid var(--key-edge); border-bottom-width: 3px; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1; transition: transform .08s, background .15s; }
+.k { position: relative; width: clamp(28px, min(6.4vw, 6vh), 56px); height: clamp(28px, min(7vw, 4.4vh), 52px); border-radius: 7px; background: var(--key); border: 1px solid var(--key-edge); border-bottom-width: 3px; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1; transition: transform .08s, background .15s; }
 .k .l { font-family: var(--f-key); font-size: clamp(12px, 2.4vw, 15px); font-weight: 700; }
 .k .z { font-family: var(--f-han); font-size: clamp(9px, 1.8vw, 11px); color: var(--zy); margin-top: 3px; }
 .k .u { position: absolute; top: 2px; right: 3px; font-family: var(--f-py); font-size: 9px; color: var(--py); font-weight: 700; }
 .k.next { background: var(--py); border-color: var(--py); }
 .k.next .l, .k.next .z, .k.next .u { color: var(--card); }
 .k.press { transform: translateY(2px); border-bottom-width: 1px; }
-.kcap { text-align: center; font-size: 12px; color: var(--muted); margin: 8px 0 0; }
+.kcap { flex: none; text-align: center; font-size: 12px; color: var(--muted); margin: 6px 0 0; }
+@media (min-width: 861px) and (max-height: 820px) { .kcap { display: none; } }
 
 /* result */
 .score { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 28px; }
@@ -681,6 +698,7 @@ function renderTrail() {
 
 function render() {
   renderHeader(); renderTrail();
+  $('#main').className = 'panel' + (state.view === 'lesson' && state.tab === 'practice' && S ? ' practice' : '');
   if (state.view === 'table') return renderTable();
   if (state.tab === 'practice' && S) return renderPractice();
   if (state.tab === 'result' && S) return renderResult();
@@ -690,11 +708,11 @@ function render() {
 function lessonHead(l) {
   const i = LESSONS.indexOf(l);
   const stepNo = l.id === 'mix' ? '最後一關' : `第 ${i + 1} 步`;
-  return `<p class="eyebrow">${stepNo} · ${esc(l.sub)}</p><h2>${esc(l.title)}</h2>
+  return `<div class="lhead"><div><p class="eyebrow">${stepNo} · ${esc(l.sub)}</p><h2>${esc(l.title)}</h2></div>
     <div class="tabs" role="tablist">
       <button role="tab" data-tab="learn" aria-selected="${state.tab === 'learn'}">學習</button>
       <button role="tab" data-tab="practice" aria-selected="${state.tab !== 'learn'}">打字練習</button>
-    </div>`;
+    </div></div>`;
 }
 
 function poolFor(l) {
@@ -766,6 +784,11 @@ function renderPractice() {
       <label class="toggle ${toneAvail ? '' : 'off'}" title="${toneAvail ? '' : '第 4 步開始練聲調'}">
         <input type="checkbox" id="toneOn" ${state.toneOn && toneAvail ? 'checked' : ''} ${toneAvail ? '' : 'disabled'}> 打聲調 1–5
       </label>
+      <span class="tools">
+        ${it.h && canSpeak ? `<button class="btn ghost sm" data-say="${esc(it.h)}">聽讀音</button>` : ''}
+        <button class="btn ghost sm" data-act="reveal">不會，看答案</button>
+        <button class="btn ghost sm" data-act="quit">結束練習</button>
+      </span>
     </div>
     <div class="stage" id="stage">
       <div class="prompt">${prompt}</div>
@@ -775,13 +798,6 @@ function renderPractice() {
       <input id="ime" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" inputmode="latin" aria-label="在這裡輸入拼音">
     </div>
     <div id="hint" class="hint" hidden></div>
-    <div class="row-actions">
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        ${it.h && canSpeak ? `<button class="btn ghost" data-say="${esc(it.h)}">聽讀音</button>` : ''}
-        <button class="btn ghost" data-act="reveal">不會，看答案</button>
-      </div>
-      <button class="btn ghost" data-act="quit">結束練習</button>
-    </div>
     ${kbHTML()}`;
   const inp = $('#ime');
   inp.value = S.value;
