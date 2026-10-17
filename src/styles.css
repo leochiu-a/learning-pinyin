@@ -623,7 +623,7 @@ kbd {
   margin: 0;
 }
 .typed {
-  min-height: 1.4em;
+  height: 1.4em; /* 固定高度：打字前後高度一樣，版面不跳 */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -680,7 +680,8 @@ kbd {
   font-family: var(--f-py);
   font-size: clamp(18px, 2.6vh, 26px);
   color: var(--py);
-  min-height: 1.4em;
+  height: 1.4em;
+  line-height: 1.4;
   margin-top: calc(-1 * clamp(4px, 1vh, 10px));
 }
 #ime {
@@ -693,9 +694,13 @@ kbd {
   border: 0;
   cursor: text;
 }
-.hint {
+/* 固定留兩行高的位置給提示，提示出現或消失時上面的練習區不會跳動 */
+.hint-slot {
   flex: none;
   margin-top: clamp(8px, 1.6vh, 14px);
+  min-height: calc(2 * 1.5 * 14px + 16px);
+}
+.hint {
   padding: 8px 16px;
   line-height: 1.5;
   border-radius: 10px;
@@ -1087,4 +1092,12 @@ a.btn {
   flex-basis: 100%;
   font-size: 12px;
   color: var(--muted);
+}
+
+/* 矮的筆電視窗：縮小練習畫面下方的間距，讓提示區也放得下 */
+@media (min-width: 861px) and (max-height: 820px) {
+  .kbd,
+  .hint-slot {
+    margin-top: 6px;
+  }
 }

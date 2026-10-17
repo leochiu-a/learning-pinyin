@@ -112,9 +112,7 @@ function DrillCard({ card, tone, cleared, total, onNext, onQuit }: CardProps) {
       <div className="stage">
         <p className="drill-reason">
           <span className="pill level">{card.reason}</span>
-          {card.need > 1 && (
-            <span className="note">{remaining > 1 ? `要連續打對 ${remaining} 次` : '再打對 1 次就過關'}</span>
-          )}
+          <span className="note">{remaining > 1 ? `要連續打對 ${remaining} 次` : '打對 1 次就過關'}</span>
         </p>
         <div className="prompt">
           <span className="glyph">
