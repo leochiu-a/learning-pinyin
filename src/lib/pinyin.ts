@@ -1,4 +1,4 @@
-import type { Item } from './types';
+import type { Syllables } from './types';
 
 const MARKS: Record<string, string> = { a: 'āáǎà', e: 'ēéěè', i: 'īíǐì', o: 'ōóǒò', u: 'ūúǔù', ü: 'ǖǘǚǜ' };
 
@@ -29,12 +29,12 @@ export function mark(s: string) {
 }
 
 /** 整個詞的標準拼音，a o e 開頭的音節前加隔音符號 */
-export const pyOf = (it: Item) => it.syl.map((s, i) => (i > 0 && /^[aoe]/.test(s) ? "'" : '') + mark(s)).join('');
+export const pyOf = (it: Syllables) => it.syl.map((s, i) => (i > 0 && /^[aoe]/.test(s) ? "'" : '') + mark(s)).join('');
 
 const zyTone = (z: string, t: number) => (t === 5 ? '˙' + z : z + (['', '', 'ˊ', 'ˇ', 'ˋ'][t] ?? ''));
 
 /** 每個音節加上聲調符號的注音 */
-export const zyList = (it: Item) => it.zs.map((z, i) => zyTone(z, toneOf(it.syl[i] ?? '')));
+export const zyList = (it: Syllables) => it.zs.map((z, i) => zyTone(z, toneOf(it.syl[i] ?? '')));
 
 /** 這個音節從注音轉拼音時最該注意的規則 */
 export function ruleFor(z: string, p: string) {

@@ -75,3 +75,6 @@ export const firstOpenLesson = (p: Progress) =>
     0,
     COURSE.findIndex((l, i) => !l.isMix && isUnlocked(p, i) && !isDone(p, i)),
   );
+
+/** 課程只有第 4 步之後的題目才考聲調 */
+export const toneApplies = (it: Item, toneOn: boolean) => toneOn && it.li >= TONE_IDX;

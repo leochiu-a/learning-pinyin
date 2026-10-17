@@ -1,14 +1,11 @@
-import { TONE_IDX } from './course';
 import { ruleFor, stripTone } from './pinyin';
-import type { Item } from './types';
+import type { Syllables } from './types';
 
-/** 第 4 步之後的題目才考聲調；toneOn 為 false 時一律只考字母 */
-export const needsTone = (it: Item, toneOn: boolean) =>
-  toneOn && it.li >= TONE_IDX && it.syl.some(s => /[1-5]$/.test(s));
-
-/** 每種可接受的打法（音節陣列），第一個是標準答案；輕聲的 5 可打可不打 */
-export function variantsOf(it: Item, toneOn: boolean) {
-  const tone = needsTone(it, toneOn);
+/**
+ * 每種可接受的打法（音節陣列），第一個是標準答案。
+ * tone 為 true 時要打聲調數字，輕聲的 5 可打可不打。
+ */
+export function variantsOf(it: Syllables, tone: boolean) {
   let vs: string[][] = [[]];
   for (const s of it.syl) {
     const base = stripTone(s);
@@ -18,9 +15,9 @@ export function variantsOf(it: Item, toneOn: boolean) {
   return vs;
 }
 
-export const targetOf = (it: Item, toneOn: boolean) => variantsOf(it, toneOn)[0].join('');
+export const targetOf = (it: Syllables, tone: boolean) => variantsOf(it, tone)[0].join('');
 
-export const isComplete = (it: Item, toneOn: boolean, v: string) => variantsOf(it, toneOn).some(s => s.join('') === v);
+export const isComplete = (it: Syllables, tone: boolean, v: string) => variantsOf(it, tone).some(s => s.join('') === v);
 
 export interface Match {
   segs: string[];
@@ -30,9 +27,9 @@ export interface Match {
 }
 
 /** 挑出和目前輸入最接近的打法 */
-export function match(it: Item, toneOn: boolean, v: string): Match {
+export function match(it: Syllables, tone: boolean, v: string): Match {
   let best: Match | null = null;
-  for (const segs of variantsOf(it, toneOn)) {
+  for (const segs of variantsOf(it, tone)) {
     const tgt = segs.join('');
     let k = 0;
     while (k < v.length && v[k] === tgt[k]) k++;
@@ -59,7 +56,7 @@ const TONE_NAME = ['', '一', '二', '三', '四', '輕'];
 const TONE_MARK = ['', 'ˉ', 'ˊ', 'ˇ', 'ˋ'];
 
 /** 在第 k 個字打錯時，告訴使用者該怎麼打 */
-export function hintAt(it: Item, k: number, segs: string[]): Hint {
+export function hintAt(it: Syllables, k: number, segs: string[]): Hint {
   let pos = 0;
   let si = 0;
   for (; si < segs.length; si++) {
@@ -73,11 +70,11 @@ export function hintAt(it: Item, k: number, segs: string[]): Hint {
     const t = +ch;
     const who = it.h[si] ? `「${it.h[si]}」` : '這個音節';
     return t === 5
-      ? { text: `${who}是輕聲，打 `, key: '5', after: ' 或直接打下一個音節都可以。' }
+      ? { text: `${who}是輕聲，打 `, key: '5', after: ' 或不打都可以。' }
       : { text: `${who}是${TONE_NAME[t]}聲（${TONE_MARK[t]}），在音節後面打 `, key: ch, after: '。' };
   }
   return { text: `${ruleFor(it.zs[si], stripTone(it.syl[si]))} 下一個字母是 `, key: ch, after: '。' };
 }
 
 /** 看答案時列出這題用到的規則 */
-export const rulesOf = (it: Item) => [...new Set(it.syl.map((s, i) => ruleFor(it.zs[i], stripTone(s))))];
+export const rulesOf = (it: Syllables) => [...new Set(it.syl.map((s, i) => ruleFor(it.zs[i], stripTone(s))))];

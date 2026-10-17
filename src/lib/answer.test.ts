@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { cleanInput, hintAt, isComplete, match, targetOf } from './answer';
-import { COURSE, TONE_IDX, parseLine } from './course';
+import { COURSE, TONE_IDX, parseLine, toneApplies } from './course';
 
 const item = (line: string, li = TONE_IDX + 1) => parseLine(line, li);
 
@@ -19,7 +19,8 @@ describe('tones', () => {
   });
 
   it('never requires tones before the tone lesson', () => {
-    expect(targetOf(item('爸 ba4 ㄅㄚ', TONE_IDX - 1), true)).toBe('ba');
+    const ba = item('爸 ba4 ㄅㄚ', TONE_IDX - 1);
+    expect(targetOf(ba, toneApplies(ba, true))).toBe('ba');
   });
 
   it('accepts a neutral tone with or without 5', () => {
