@@ -314,13 +314,13 @@ const LESSONS = [
 特 te4 ㄊㄜ` },
 
   { id: 'tone', title: '四聲與輕聲', sub: 'ˉ ˊ ˇ ˋ ˙',
-    intro: '注音的 ˉ ˊ ˇ ˋ ˙，拼音改成標在母音上的符號 ā á ǎ à，輕聲不標。打字時在每個音節後面加數字 1 到 5。從這一步開始，練習都要打聲調。',
+    intro: '注音的 ˉ ˊ ˇ ˋ ˙，拼音改成標在母音上的符號 ā á ǎ à，輕聲不標。學拼音時常用「數字標調」：在音節後面加 1 到 5，例如 ma3。這一步的練習一定要打聲調，之後的步驟可以在練習畫面上方自己決定要不要打開「打聲調」。',
     rows: [
       { z: 'ˉ', p: 'ā · 1', ex: '媽 ma1 ㄇㄚ', note: '一聲' }, { z: 'ˊ', p: 'á · 2', ex: '麻 ma2 ㄇㄚ', note: '二聲' },
       { z: 'ˇ', p: 'ǎ · 3', ex: '馬 ma3 ㄇㄚ', note: '三聲' }, { z: 'ˋ', p: 'à · 4', ex: '罵 ma4 ㄇㄚ', note: '四聲' },
       { z: '˙', p: '不標 · 5', ex: '嗎 ma5 ㄇㄚ', note: '輕聲' },
     ],
-    traps: ['聲調標在哪：有 a 標 a，沒有 a 就找 o 或 e，iu、ui 標在後面那個。例：hǎo、duō、liù、duì。', '注音輸入法的一聲是空白鍵、輕聲是 7；這裡統一打 1 到 5，輕聲打 5。', '注音的輕聲 ˙ 寫在最前面，拼音的輕聲什麼都不標。'],
+    traps: ['聲調標在哪：有 a 標 a，沒有 a 就找 o 或 e，iu、ui 標在後面那個。例：hǎo、duō、liù、duì。', '真正的拼音輸入法不用打聲調，只打字母再選字；空白鍵是選第一個候選字，不是一聲。這裡的數字只是練習用的數字標調。', '輕聲打 5，或乾脆不打也算對。', '注音的輕聲 ˙ 寫在最前面，拼音的輕聲什麼都不標。'],
     items: `媽 ma1 ㄇㄚ
 麻 ma2 ㄇㄚ
 馬 ma3 ㄇㄚ
@@ -552,7 +552,7 @@ const LESSONS = [
       { z: '隔音符號', p: "zǎo'ān", ex: '早安 zao3,an1 ㄗㄠ,ㄢ', note: "a o e 開頭的音節前面加 '，打字時不用打。" },
       { z: 'ü 不變', p: 'lǜsè', ex: '綠色 lv4,se4 ㄌㄩ,ㄙㄜ', note: '詞裡的 ㄌㄩ 一樣打 lv。' },
     ],
-    traps: ['一個詞的音節連著寫：Táiwān、diànnǎo。', '每個音節後面都要打聲調數字，例如 tai2wan1。'],
+    traps: ['一個詞的音節連著寫：Táiwān、diànnǎo。', '打開「打聲調」時，每個音節後面加數字，例如 tai2wan1。'],
     items: `台灣 tai2,wan1 ㄊㄞ,ㄨㄢ
 你好 ni3,hao3 ㄋㄧ,ㄏㄠ
 朋友 peng2,you3 ㄆㄥ,ㄧㄡ
@@ -643,7 +643,8 @@ const unlocked = i => {
   return isDone(i - 1);
 };
 
-const state = { view: 'lesson', li: 0, tab: 'learn', toneOn: true };
+const state = { view: 'lesson', li: 0, tab: 'learn', toneOn: false };
+try { state.toneOn = localStorage.getItem('pinyin-steps-tone') === '1'; } catch (e) {}
 state.li = Math.max(0, LESSONS.findIndex((l, i) => l.id !== 'mix' && unlocked(i) && !isDone(i)));
 let S = null; // 練習中的 session
 
@@ -666,9 +667,31 @@ function speak(text) {
 const sayBtn = text => canSpeak && text ? `<button class="say" data-say="${esc(text)}" aria-label="播放「${esc(text)}」的讀音">${SPEAK_SVG}</button>` : '';
 const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 
-const needsTone = it => state.toneOn && it.li >= TONE_IDX && it.syl.some(s => /[1-5]$/.test(s));
-const segsOf = it => it.syl.map(s => needsTone(it) ? s : s.replace(/[1-5]$/, ''));
-const targetOf = it => segsOf(it).join('');
+// 真正的拼音輸入法不打聲調，所以預設關閉；只有「四聲與輕聲」這一步一定要打
+const toneForced = () => S && S.li === TONE_IDX;
+const needsTone = it => (state.toneOn || toneForced()) && it.li >= TONE_IDX && it.syl.some(s => /[1-5]$/.test(s));
+// 每種可接受的打法（音節陣列），第一個是標準答案；輕聲的 5 可打可不打
+function variantsOf(it) {
+  const tone = needsTone(it);
+  let vs = [[]];
+  it.syl.forEach(s => {
+    const base = s.replace(/[1-5]$/, '');
+    const opts = !tone ? [base] : /5$/.test(s) ? [s, base] : [s];
+    vs = vs.flatMap(v => opts.map(o => [...v, o]));
+  });
+  return vs;
+}
+const targetOf = it => variantsOf(it)[0].join('');
+// 挑出和目前輸入最接近的打法，回傳它和對了幾個字
+function match(it, v) {
+  let best = null;
+  for (const segs of variantsOf(it)) {
+    const tgt = segs.join('');
+    let k = 0; while (k < v.length && v[k] === tgt[k]) k++;
+    if (!best || k > best.k) best = { segs, tgt, k };
+  }
+  return best;
+}
 
 // ---------- 畫面 ----------
 function renderHeader() {
@@ -772,17 +795,20 @@ const cur = () => S.items[S.i];
 function renderPractice() {
   const l = LESSONS[S.li];
   const it = cur();
-  const toneAvail = S.li >= TONE_IDX || l.id === 'mix';
+  const toneAvail = (S.li >= TONE_IDX || l.id === 'mix') && !toneForced();
+  const toneTip = toneForced() ? '這一步就是練聲調，一定要打' : toneAvail ? '真正的拼音輸入法不用打聲調；想加強聲調記憶再打開' : '第 4 步之後才能練聲調';
   const prompt = it.h
     ? [...it.h].map((c, i) => `<span class="glyph"><span class="han">${esc(c)}</span><span class="zy">${esc(zyList(it)[i] || '')}</span></span>`).join('')
     : `<span class="zy solo">${esc(it.zs[0])}</span>`;
-  const askText = it.h ? (needsTone(it) ? '打出拼音，每個音節後面加聲調數字' : '打出拼音（這一步不用打聲調）') : '這個注音的拼音是？';
+  const askText = !it.h ? '這個注音的拼音是？'
+    : needsTone(it) ? '打出拼音，每個音節後面加聲調數字（輕聲可以不打）'
+    : '打出拼音，不用打聲調';
   $('#main').innerHTML = `${lessonHead(l)}
     <div class="pbar">
       <span>第 ${S.i + 1} / ${S.items.length} 題</span>
       <span class="bar"><i style="width:${S.i / S.items.length * 100}%"></i></span>
-      <label class="toggle ${toneAvail ? '' : 'off'}" title="${toneAvail ? '' : '第 4 步開始練聲調'}">
-        <input type="checkbox" id="toneOn" ${state.toneOn && toneAvail ? 'checked' : ''} ${toneAvail ? '' : 'disabled'}> 打聲調 1–5
+      <label class="toggle ${toneAvail ? '' : 'off'}" title="${toneTip}">
+        <input type="checkbox" id="toneOn" ${toneForced() || (state.toneOn && toneAvail) ? 'checked' : ''} ${toneAvail ? '' : 'disabled'}> 打聲調 1–5
       </label>
       <span class="tools">
         ${it.h && canSpeak ? `<button class="btn ghost sm" data-say="${esc(it.h)}">聽讀音</button>` : ''}
@@ -810,9 +836,8 @@ function renderPractice() {
 }
 
 function paintTyped(win) {
-  const tgt = targetOf(cur());
   const v = S.value;
-  let k = 0; while (k < v.length && v[k] === tgt[k]) k++;
+  const { k } = match(cur(), v);
   const el = $('#typed');
   if (win) { el.className = 'typed win'; el.textContent = v; return; }
   el.className = 'typed';
@@ -826,18 +851,19 @@ function lightKey(ch) {
   if (ch) { const e = document.querySelector(`.k[data-k="${ch}"]`); if (e) e.classList.add('next'); }
 }
 
-function hintAt(it, k) {
-  const segs = segsOf(it);
+function hintAt(it, k, segs) {
   let pos = 0, si = 0;
   for (; si < segs.length; si++) { if (k < pos + segs[si].length) break; pos += segs[si].length; }
   si = Math.min(si, segs.length - 1);
-  const tgt = targetOf(it);
+  const tgt = segs.join('');
   const ch = tgt[k];
   if (ch === undefined) return '打太多了，把多出來的字母刪掉。';
   if (/\d/.test(ch)) {
     const t = +ch, name = ['', '一', '二', '三', '四', '輕'][t];
     const who = it.h[si] ? `「${it.h[si]}」` : '這個音節';
-    return `${who}是${name}聲${t < 5 ? `（${['', 'ˉ', 'ˊ', 'ˇ', 'ˋ'][t]}）` : ''}，在音節後面打 <kbd>${t}</kbd>。`;
+    return t === 5
+      ? `${who}是輕聲，打 <kbd>5</kbd> 或直接打下一個音節都可以。`
+      : `${who}是${name}聲（${['', 'ˉ', 'ˊ', 'ˇ', 'ˋ'][t]}），在音節後面打 <kbd>${t}</kbd>。`;
   }
   const p = it.syl[si].replace(/[1-5]$/, '');
   return `${esc(ruleFor(it.zs[si], p))} 下一個字母是 <kbd>${ch}</kbd>。`;
@@ -858,26 +884,25 @@ function onType(e) {
   if (!S || S.locked) { e.target.value = S ? S.value : ''; return; }
   if (e.isComposing || S.composing) { warnInput(true); return; }
   const it = cur();
-  const tgt = targetOf(it);
   const raw = e.target.value.toLowerCase().replace(/ü/g, 'v').replace(/[\s']/g, '');
   if (/[^\x00-\x7f]/.test(raw)) { e.target.value = S.value; return warnInput(true); }
   if (/[^a-z0-9]/.test(raw)) { e.target.value = S.value; return warnInput(false); }
-  let v = raw.slice(0, tgt.length + 3);
+  const v = raw.slice(0, targetOf(it).length + 3);
   e.target.value = v;
   S.value = v;
-  let k = 0; while (k < v.length && v[k] === tgt[k]) k++;
+  const { segs, tgt, k } = match(it, v);
   const hint = $('#hint');
   if (k < v.length) {
     S.wrong = true;
-    if (S.errAt !== k) { S.errAt = k; }
+    S.errAt = k;
     hint.hidden = false; hint.className = 'hint';
-    hint.innerHTML = hintAt(it, k) + ' 先按退格鍵刪掉打錯的部分。';
+    hint.innerHTML = hintAt(it, k, segs) + ' 先按退格鍵刪掉打錯的部分。';
     lightKey(tgt[k]);
   } else {
     S.errAt = null;
     if (!S.revealed) hint.hidden = true;
     lightKey(S.revealed ? tgt[k] : null);
-    if (v === tgt) return correct();
+    if (variantsOf(it).some(s => s.join('') === v)) return correct();
   }
   paintTyped();
 }
@@ -906,8 +931,8 @@ function reveal() {
   const hint = $('#hint');
   hint.hidden = false; hint.className = 'hint reveal';
   hint.innerHTML = `答案是 <b>${esc(pyOf(it))}</b>，要打 <kbd>${esc(tgt)}</kbd>。${rules.map(esc).join(' ')} 現在照著打一次，這題不計分。`;
-  let k = 0; while (k < S.value.length && S.value[k] === tgt[k]) k++;
-  lightKey(tgt[k]);
+  const m = match(it, S.value);
+  lightKey(m.tgt[m.k]);
   $('#ime').focus({ preventScroll: true });
 }
 
@@ -958,7 +983,7 @@ const TABLE = [
   ['ㄨ 開頭', [['ㄨㄚ', 'ua', '單獨：wa'], ['ㄨㄛ', 'uo', '單獨：wo'], ['ㄨㄞ', 'uai', '單獨：wai'], ['ㄨㄟ', 'ui', '單獨：wei', 1], ['ㄨㄢ', 'uan', '單獨：wan'],
     ['ㄨㄣ', 'un', '單獨：wen', 1], ['ㄨㄤ', 'uang', '單獨：wang'], ['ㄨㄥ', 'ong', '單獨：weng', 1]]],
   ['ㄩ 開頭', [['ㄩㄝ', 'üe', 'jqx 後：ue · 單獨：yue', 1], ['ㄩㄢ', 'üan', 'jqx 後：uan · 單獨：yuan', 1], ['ㄩㄣ', 'ün', 'jqx 後：un · 單獨：yun', 1], ['ㄩㄥ', 'iong', '單獨：yong', 1]]],
-  ['聲調', [['ˉ', 'ā', '一聲 · 打 1'], ['ˊ', 'á', '二聲 · 打 2'], ['ˇ', 'ǎ', '三聲 · 打 3'], ['ˋ', 'à', '四聲 · 打 4'], ['˙', '不標', '輕聲 · 打 5']]],
+  ['聲調', [['ˉ', 'ā', '一聲 · 打 1'], ['ˊ', 'á', '二聲 · 打 2'], ['ˇ', 'ǎ', '三聲 · 打 3'], ['ˋ', 'à', '四聲 · 打 4'], ['˙', '不標', '輕聲 · 打 5 或不打']]],
 ];
 function renderTable() {
   $('#main').innerHTML = `<p class="eyebrow">隨時回來查</p><h2>注音拼音對照表</h2>
@@ -985,7 +1010,7 @@ document.addEventListener('click', e => {
   if (t.dataset.act === 'quit') { state.tab = 'learn'; S = null; return render(); }
 });
 document.addEventListener('change', e => {
-  if (e.target.id === 'toneOn') { state.toneOn = e.target.checked; S.value = ''; S.errAt = null; renderPractice(); }
+  if (e.target.id === 'toneOn') { state.toneOn = e.target.checked; try { localStorage.setItem('pinyin-steps-tone', state.toneOn ? '1' : '0'); } catch (err) {} S.value = ''; S.errAt = null; renderPractice(); }
 });
 document.addEventListener('keydown', e => {
   const k = document.querySelector(`.k[data-k="${CSS.escape((e.key || '').toLowerCase())}"]`);
