@@ -6,7 +6,6 @@ import { zyList } from '../lib/pinyin';
 import { canSpeak, speak } from '../lib/speech';
 import { HintBox } from './HintBox';
 import { Keyboard } from './Keyboard';
-import { TypedLine } from './TypedLine';
 
 export interface ArticleRun {
   /** 每個要打的字是否第一次就打對，順序同 article.slots */
@@ -27,6 +26,8 @@ interface Props {
 export function ArticleTyping({ article, toneOn, onToneChange, showZhuyin, onZhuyinChange, onFinish, onQuit }: Props) {
   const [pos, setPos] = useState(0);
   const [firstTry, setFirstTry] = useState<boolean[]>([]);
+  // 每個打完的字實際打出來的拼音，留在字的下方
+  const [typed, setTyped] = useState<string[]>([]);
   // 從第一次按鍵開始計時，到最近一次打對為止
   const [startedAt, setStartedAt] = useState<number | null>(null);
   const [lastAt, setLastAt] = useState<number | null>(null);
@@ -37,10 +38,11 @@ export function ArticleTyping({ article, toneOn, onToneChange, showZhuyin, onZhu
   const typing = useSyllableTyping(target, {
     tone: toneOn,
     unit: '字',
-    onSolved: ok => {
+    onSolved: (ok, value) => {
       const now = Date.now();
       const marks = [...firstTry, ok];
       setFirstTry(marks);
+      setTyped(t => [...t, value]);
       setLastAt(now);
       if (pos + 1 >= article.slots.length) onFinish({ firstTry: marks, ms: now - (startedAt ?? now) });
       else setPos(pos + 1);
@@ -129,15 +131,24 @@ export function ArticleTyping({ article, toneOn, onToneChange, showZhuyin, onZhu
                 const state = !c.target ? 'punct' : n === pos ? 'cur' : n! < pos ? (firstTry[n!] ? 'ok' : 'miss') : '';
                 return (
                   <span key={i} ref={n === pos ? current : undefined} className={`pc ${state}`}>
-                    <span className="han">{c.ch}</span>
                     <span className="zy">{showZhuyin && c.target ? zyList(c.target)[0] : ''}</span>
+                    <span className="han">{c.ch}</span>
+                    {n === pos ? (
+                      <span key={typing.shake} className={`pyt${typing.shake ? ' shake' : ''}`}>
+                        <span className="ok">{typing.value.slice(0, typing.matched)}</span>
+                        <span className="bad">{typing.value.slice(typing.matched)}</span>
+                        <span className="caret" />
+                      </span>
+                    ) : (
+                      <span className="pyt">{n != null && n < pos ? typed[n] : ''}</span>
+                    )}
                   </span>
                 );
               })}
             </span>
           ))}
         </p>
-        <TypedLine value={typing.value} matched={typing.matched} solved={typing.solved} shake={typing.shake} />
+        <p className="ask">直接打拼音，打對會自動跳到下一個字</p>
         <input {...typing.inputProps} onChange={onChange} />
       </div>
 

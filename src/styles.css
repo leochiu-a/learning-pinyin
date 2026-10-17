@@ -1045,3 +1045,29 @@ a.btn {
 .pgroup {
   display: inline-flex;
 }
+/* 打文章：每個字下方的拼音，打完後留著 */
+.pc .pyt {
+  min-height: 1.4em;
+  font-family: var(--f-key);
+  font-size: clamp(11px, 1.6vh, 15px);
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--py);
+  white-space: nowrap;
+}
+.pc.miss .pyt {
+  color: var(--zy);
+}
+.pc .pyt .bad {
+  color: var(--bad);
+  background: var(--bad-soft);
+  border-radius: 3px;
+}
+.pc .pyt .caret {
+  width: 2px;
+  margin-left: 1px;
+  vertical-align: -0.15em;
+}
+.pc .pyt.shake {
+  animation: shake 0.3s;
+}

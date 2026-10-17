@@ -39,8 +39,8 @@ const fresh = (target: Syllables): TypingState => ({
 interface Options {
   /** 要不要打聲調數字 */
   tone: boolean;
-  /** 打對時呼叫；firstTry 表示中途沒有打錯也沒看答案 */
-  onSolved: (firstTry: boolean) => void;
+  /** 打對時呼叫；firstTry 表示中途沒有打錯也沒看答案，typed 是最後打出來的字 */
+  onSolved: (firstTry: boolean, typed: string) => void;
   /** 看答案提示裡的單位，例如「題」或「字」 */
   unit: string;
 }
@@ -80,7 +80,7 @@ export function useSyllableTyping(target: Syllables, { tone, onSolved, unit }: O
     const wrong = s.wrong || hasError;
     const solved = !hasError && isComplete(target, tone, v);
     setState({ ...s, value: v, wrong, solved, warn: null });
-    if (solved) onSolved(!wrong);
+    if (solved) onSolved(!wrong, v);
   };
 
   const reveal = () => {
