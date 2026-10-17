@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+
 import { cleanInput, hintAt, isComplete, match, targetOf } from './answer';
 import { COURSE, TONE_IDX, parseLine } from './course';
 
@@ -59,8 +60,8 @@ describe('cleanInput', () => {
 describe('course data', () => {
   it('has matching pinyin and zhuyin syllables for every item', () => {
     for (const l of COURSE) {
-      for (const it of l.pool) expect(it.zs.length, `${l.id} ${it.h}`).toBe(it.syl.length);
-      for (const it of l.pool.filter(x => x.h)) expect([...it.h].length, `${l.id} ${it.h}`).toBe(it.syl.length);
+      for (const x of l.pool) expect(x.zs.length, `${l.id} ${x.h}`).toBe(x.syl.length);
+      for (const x of l.pool.filter(y => y.h)) expect([...x.h].length, `${l.id} ${x.h}`).toBe(x.syl.length);
     }
   });
 });

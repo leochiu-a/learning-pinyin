@@ -45,7 +45,9 @@ export function Trail({ progress, current, onSelect, onUnlockAll }: Props) {
           <>
             每一步答對 {PASS * 100}% 才會開下一步。
             <br />
-            <button className="linkbtn" onClick={onUnlockAll}>已經會了？直接解鎖全部</button>
+            <button className="linkbtn" onClick={onUnlockAll}>
+              已經會了？直接解鎖全部
+            </button>
           </>
         )}
       </div>

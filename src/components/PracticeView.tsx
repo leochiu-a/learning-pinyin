@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type ChangeEvent } from 'react';
+
 import { cleanInput, hintAt, isComplete, match, needsTone, rulesOf, targetOf, type Hint } from '../lib/answer';
 import { COURSE, TONE_IDX } from '../lib/course';
 import { pyOf, zyList } from '../lib/pinyin';
@@ -18,7 +19,9 @@ interface Props {
 type Warn = 'ime' | 'symbol';
 
 const WARN_TEXT: Record<Warn, Hint> = {
-  ime: { text: '現在是注音（中文）輸入法，打的字不會被收到。請切換成英文輸入：Mac 按 Caps Lock 或 Shift，Windows 按 Shift。' },
+  ime: {
+    text: '現在是注音（中文）輸入法，打的字不會被收到。請切換成英文輸入：Mac 按 Caps Lock 或 Shift，Windows 按 Shift。',
+  },
   symbol: { text: '這裡只能打英文字母和數字 1–5，其他符號不會被收到。ü 請打 ', key: 'v', after: '。' },
 };
 
@@ -38,7 +41,7 @@ export function PracticeView({ li, items, toneOn, onToneChange, onFinish, onQuit
   const [warn, setWarn] = useState<Warn | null>(null);
   const [shake, setShake] = useState(0);
   const results = useRef<Result[]>([]);
-  const startedAt = useRef(Date.now());
+  const [startedAt] = useState(() => Date.now());
   const composing = useRef(false);
   const input = useRef<HTMLInputElement>(null);
 
@@ -46,15 +49,16 @@ export function PracticeView({ li, items, toneOn, onToneChange, onFinish, onQuit
   const m = match(it, tone, value);
   const error = m.k < value.length;
 
+  // 每輪練習都會重新掛載，輸入框之後一直是同一個元素，所以只要在一開始聚焦
   useEffect(() => {
     input.current?.focus({ preventScroll: true });
-  }, [i]);
+  }, []);
 
   useEffect(() => {
     if (!solved) return;
     const timer = setTimeout(() => {
       if (i + 1 >= items.length) {
-        onFinish(results.current, Math.round((Date.now() - startedAt.current) / 1000));
+        onFinish(results.current, Math.round((Date.now() - startedAt) / 1000));
         return;
       }
       setI(i + 1);
@@ -65,7 +69,7 @@ export function PracticeView({ li, items, toneOn, onToneChange, onFinish, onQuit
       setWarn(null);
     }, ADVANCE_MS);
     return () => clearTimeout(timer);
-  }, [solved, i, items.length, onFinish]);
+  }, [solved, i, items.length, onFinish, startedAt]);
 
   const flagWarn = (w: Warn) => {
     setWarn(w);
@@ -111,7 +115,7 @@ export function PracticeView({ li, items, toneOn, onToneChange, onFinish, onQuit
         { text: ` ${rulesOf(it).join(' ')} 現在照著打一次，這題不計分。` },
       ],
     };
-  const nextKey = (error || revealed) && !solved ? m.tgt[m.k] ?? null : null;
+  const nextKey = (error || revealed) && !solved ? (m.tgt[m.k] ?? null) : null;
 
   const ask = !it.h
     ? '這個注音的拼音是？'
@@ -128,8 +132,12 @@ export function PracticeView({ li, items, toneOn, onToneChange, onFinish, onQuit
   return (
     <>
       <div className="pbar">
-        <span>第 {i + 1} / {items.length} 題</span>
-        <span className="bar"><i style={{ width: `${(i / items.length) * 100}%` }} /></span>
+        <span>
+          第 {i + 1} / {items.length} 題
+        </span>
+        <span className="bar">
+          <i style={{ width: `${(i / items.length) * 100}%` }} />
+        </span>
         <label className={`toggle${toneAvail ? '' : ' off'}`} title={toneTip}>
           <input
             type="checkbox"
@@ -141,13 +149,22 @@ export function PracticeView({ li, items, toneOn, onToneChange, onFinish, onQuit
           打聲調 1–5
         </label>
         <span className="tools">
-          {it.h && canSpeak && <button className="btn ghost sm" onClick={() => speak(it.h)}>聽讀音</button>}
-          <button className="btn ghost sm" onClick={reveal}>不會，看答案</button>
-          <button className="btn ghost sm" onClick={onQuit}>結束練習</button>
+          {it.h && canSpeak && (
+            <button className="btn ghost sm" onClick={() => speak(it.h)}>
+              聽讀音
+            </button>
+          )}
+          <button className="btn ghost sm" onClick={reveal}>
+            不會，看答案
+          </button>
+          <button className="btn ghost sm" onClick={onQuit}>
+            結束練習
+          </button>
         </span>
       </div>
 
-      <div className="stage" onClick={() => input.current?.focus({ preventScroll: true })}>
+      {/* 透明的輸入框蓋滿整個 stage，點哪裡都會聚焦到它 */}
+      <div className="stage">
         <div className="prompt">
           {it.h ? (
             [...it.h].map((c, j) => (
@@ -184,9 +201,17 @@ export function PracticeView({ li, items, toneOn, onToneChange, onFinish, onQuit
           type="text"
           value={value}
           onChange={onChange}
-          onKeyDown={e => { if (e.key === 'Process' || e.keyCode === 229) flagWarn('ime'); }}
-          onCompositionStart={() => { composing.current = true; flagWarn('ime'); }}
-          onCompositionEnd={e => { composing.current = false; e.currentTarget.value = value; }}
+          onKeyDown={e => {
+            if (e.key === 'Process' || e.keyCode === 229) flagWarn('ime');
+          }}
+          onCompositionStart={() => {
+            composing.current = true;
+            flagWarn('ime');
+          }}
+          onCompositionEnd={e => {
+            composing.current = false;
+            e.currentTarget.value = value;
+          }}
           autoComplete="off"
           autoCapitalize="off"
           autoCorrect="off"

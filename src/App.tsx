@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react';
+
 import { LearnView } from './components/LearnView';
 import { LessonHead } from './components/LessonHead';
 import { PracticeView } from './components/PracticeView';
@@ -42,7 +43,9 @@ export function App() {
         next = { ...progress, done: { ...progress.done, [lesson.id]: Math.max(progress.done[lesson.id] ?? 0, acc) } };
         setProgress(next);
       }
-      const nextLesson = lesson.isMix ? -1 : COURSE.findIndex((_, j) => j > li && isUnlocked(next, j) && !isDone(next, j));
+      const nextLesson = lesson.isMix
+        ? -1
+        : COURSE.findIndex((_, j) => j > li && isUnlocked(next, j) && !isDone(next, j));
       setMode({ kind: 'result', results, secs, next: nextLesson >= 0 ? nextLesson : null });
     },
     [li, progress, setProgress],
@@ -58,11 +61,17 @@ export function App() {
           <h1>拼音步道</h1>
           <span>用你會的注音，一步一步學會打拼音</span>
         </div>
-        <div className="views" role="group" aria-label="切換頁面">
-          <button aria-pressed={view === 'lesson'} onClick={() => setView('lesson')}>課程</button>
-          <button aria-pressed={view === 'table'} onClick={() => setView('table')}>注音拼音對照表</button>
+        <fieldset className="views" aria-label="切換頁面">
+          <button aria-pressed={view === 'lesson'} onClick={() => setView('lesson')}>
+            課程
+          </button>
+          <button aria-pressed={view === 'table'} onClick={() => setView('table')}>
+            注音拼音對照表
+          </button>
+        </fieldset>
+        <div className="meter">
+          已走 <b>{done}</b> / {TOTAL_STEPS} 步
         </div>
-        <div className="meter">已走 <b>{done}</b> / {TOTAL_STEPS} 步</div>
       </header>
       <div className="app">
         <Trail

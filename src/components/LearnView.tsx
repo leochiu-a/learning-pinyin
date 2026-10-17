@@ -40,12 +40,20 @@ export function LearnView({ li, poolSize, onStart }: Props) {
       {l.traps.length > 0 && (
         <div className="traps">
           <h3>台灣人最容易打錯</h3>
-          <ul>{l.traps.map(t => <li key={t}>{t}</li>)}</ul>
+          <ul>
+            {l.traps.map(t => (
+              <li key={t}>{t}</li>
+            ))}
+          </ul>
         </div>
       )}
       <div className="go">
-        <button className="btn" onClick={onStart}>開始打字練習</button>
-        <small>{quizSize(li)} 題 · 第一次就打對才算分 · {PASS * 100}% 過關</small>
+        <button className="btn" onClick={onStart}>
+          開始打字練習
+        </button>
+        <small>
+          {quizSize(li)} 題 · 第一次就打對才算分 · {PASS * 100}% 過關
+        </small>
       </div>
     </>
   );

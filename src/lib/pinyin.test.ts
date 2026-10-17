@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+
 import { parseLine } from './course';
 import { mark, pyOf, ruleFor, zyList } from './pinyin';
 

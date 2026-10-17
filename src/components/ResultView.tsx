@@ -24,13 +24,19 @@ export function ResultView({ results, secs, next, onNext, onRetry, onLearn }: Pr
       <div className="score">
         <div className={`big ${passed ? 'py' : 'zy'}`}>{Math.round(acc * 100)}%</div>
         <div>
-          <span className={`pill ${passed ? 'pass' : 'retry'}`}>{passed ? '過關' : `還差一點，${PASS * 100}% 過關`}</span>
-          <p className="note" style={{ marginTop: 6 }}>第一次就打對 {ok} / {results.length} 題 · 用時 {time}</p>
+          <span className={`pill ${passed ? 'pass' : 'retry'}`}>
+            {passed ? '過關' : `還差一點，${PASS * 100}% 過關`}
+          </span>
+          <p className="note" style={{ marginTop: 6 }}>
+            第一次就打對 {ok} / {results.length} 題 · 用時 {time}
+          </p>
         </div>
       </div>
       {misses.length ? (
         <>
-          <h3 className="eyebrow" style={{ marginTop: 24 }}>這幾題再看一眼</h3>
+          <h3 className="eyebrow" style={{ marginTop: 24 }}>
+            這幾題再看一眼
+          </h3>
           <ul className="misses">
             {misses.map((it, j) => (
               <li key={j}>
@@ -42,12 +48,22 @@ export function ResultView({ results, secs, next, onNext, onRetry, onLearn }: Pr
           </ul>
         </>
       ) : (
-        <p className="lede" style={{ marginTop: 20 }}>全部一次打對。</p>
+        <p className="lede" style={{ marginTop: 20 }}>
+          全部一次打對。
+        </p>
       )}
       <div className="go">
-        {showNext && <button className="btn" onClick={() => onNext(next)}>下一步：{COURSE[next].title}</button>}
-        <button className={`btn${showNext ? ' ghost' : ''}`} onClick={onRetry}>再練一次</button>
-        <button className="btn ghost" onClick={onLearn}>回到學習</button>
+        {showNext && (
+          <button className="btn" onClick={() => onNext(next)}>
+            下一步：{COURSE[next].title}
+          </button>
+        )}
+        <button className={`btn${showNext ? ' ghost' : ''}`} onClick={onRetry}>
+          再練一次
+        </button>
+        <button className="btn ghost" onClick={onLearn}>
+          回到學習
+        </button>
       </div>
     </>
   );

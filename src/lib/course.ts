@@ -22,7 +22,12 @@ export const COURSE: CourseLesson[] = LESSONS.map((l, li) => ({
   ...l,
   isMix: l.id === 'mix',
   rows: l.rows.map(r => ({ ...r, exItem: r.ex ? parseLine(r.ex, li) : undefined })),
-  pool: l.items.trim() ? l.items.trim().split('\n').map(s => parseLine(s, li)) : [],
+  pool: l.items.trim()
+    ? l.items
+        .trim()
+        .split('\n')
+        .map(s => parseLine(s, li))
+    : [],
 }));
 
 export const TONE_IDX = COURSE.findIndex(l => l.id === 'tone');
@@ -45,7 +50,7 @@ export function poolFor(p: Progress, i: number) {
 
 export const quizSize = (i: number) => (COURSE[i].isMix ? 15 : 12);
 
-const shuffle = <T,>(a: T[]) => {
+const shuffle = <T>(a: T[]) => {
   const b = a.slice();
   for (let i = b.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -66,4 +71,7 @@ export function drawItems(pool: Item[], n: number) {
 }
 
 export const firstOpenLesson = (p: Progress) =>
-  Math.max(0, COURSE.findIndex((l, i) => !l.isMix && isUnlocked(p, i) && !isDone(p, i)));
+  Math.max(
+    0,
+    COURSE.findIndex((l, i) => !l.isMix && isUnlocked(p, i) && !isDone(p, i)),
+  );

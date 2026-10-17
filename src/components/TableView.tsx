@@ -6,7 +6,10 @@ export function TableView() {
       <p className="eyebrow">隨時回來查</p>
       <h2>注音拼音對照表</h2>
       <p className="lede">左上是注音，下面是拼音。「單獨」指前面沒有聲母、自己成一個字時的寫法。</p>
-      <div className="legend"><i />和注音直覺不同，最容易打錯</div>
+      <div className="legend">
+        <i />
+        和注音直覺不同，最容易打錯
+      </div>
       {TABLE.map(([name, cells]) => (
         <section className="tgroup" key={name}>
           <h3>{name}</h3>

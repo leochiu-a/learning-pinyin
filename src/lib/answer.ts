@@ -12,7 +12,7 @@ export function variantsOf(it: Item, toneOn: boolean) {
   let vs: string[][] = [[]];
   for (const s of it.syl) {
     const base = stripTone(s);
-    const opts = !tone ? [base] : /5$/.test(s) ? [s, base] : [s];
+    const opts = !tone ? [base] : s.endsWith('5') ? [s, base] : [s];
     vs = vs.flatMap(v => opts.map(o => [...v, o]));
   }
   return vs;
@@ -20,8 +20,7 @@ export function variantsOf(it: Item, toneOn: boolean) {
 
 export const targetOf = (it: Item, toneOn: boolean) => variantsOf(it, toneOn)[0].join('');
 
-export const isComplete = (it: Item, toneOn: boolean, v: string) =>
-  variantsOf(it, toneOn).some(s => s.join('') === v);
+export const isComplete = (it: Item, toneOn: boolean, v: string) => variantsOf(it, toneOn).some(s => s.join('') === v);
 
 export interface Match {
   segs: string[];
@@ -45,7 +44,7 @@ export function match(it: Item, toneOn: boolean, v: string): Match {
 /** 輸入只收英文字母和數字；空白和 ' 直接略過 */
 export function cleanInput(raw: string): { ok: true; value: string } | { ok: false; reason: 'ime' | 'symbol' } {
   const v = raw.toLowerCase().replace(/ü/g, 'v').replace(/[\s']/g, '');
-  if (/[^\x00-\x7f]/.test(v)) return { ok: false, reason: 'ime' };
+  if (/\P{ASCII}/u.test(v)) return { ok: false, reason: 'ime' };
   if (/[^a-z0-9]/.test(v)) return { ok: false, reason: 'symbol' };
   return { ok: true, value: v };
 }
