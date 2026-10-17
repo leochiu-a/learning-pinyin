@@ -1,8 +1,8 @@
 import { useRef, useState, type ChangeEvent, type CompositionEvent, type KeyboardEvent } from 'react';
 
-import { cleanInput, hintAt, isComplete, match, rulesOf, targetOf, type Hint } from '../lib/answer';
+import { cleanInput, hintAt, isComplete, match, rulesOf, slipAt, targetOf, type Hint } from '../lib/answer';
 import { pyOf } from '../lib/pinyin';
-import type { Syllables } from '../lib/types';
+import type { Slip, Syllables } from '../lib/types';
 
 type Warn = 'ime' | 'symbol';
 
@@ -21,7 +21,7 @@ const WARN_TEXT: Record<Warn, Hint> = {
 interface TypingState {
   target: Syllables;
   value: string;
-  wrong: boolean;
+  slip: Slip | null;
   revealed: boolean;
   solved: boolean;
   warn: Warn | null;
@@ -30,7 +30,7 @@ interface TypingState {
 const fresh = (target: Syllables): TypingState => ({
   target,
   value: '',
-  wrong: false,
+  slip: null,
   revealed: false,
   solved: false,
   warn: null,
@@ -39,8 +39,8 @@ const fresh = (target: Syllables): TypingState => ({
 interface Options {
   /** 要不要打聲調數字 */
   tone: boolean;
-  /** 打對時呼叫；firstTry 表示中途沒有打錯也沒看答案，typed 是最後打出來的字 */
-  onSolved: (firstTry: boolean, typed: string) => void;
+  /** 打對時呼叫；slip 是第一次出錯的地方（沒錯過就是 null），typed 是最後打出來的字 */
+  onSolved: (slip: Slip | null, typed: string) => void;
   /** 看答案提示裡的單位，例如「題」或「字」 */
   unit: string;
 }
@@ -76,15 +76,16 @@ export function useSyllableTyping(target: Syllables, { tone, onSolved, unit }: O
     const c = cleanInput(e.target.value);
     if (!c.ok) return warn(c.reason);
     const v = c.value.slice(0, targetOf(target, tone).length + 3);
-    const hasError = match(target, tone, v).k < v.length;
-    const wrong = s.wrong || hasError;
+    const vm = match(target, tone, v);
+    const hasError = vm.k < v.length;
+    const slip = s.slip ?? (hasError ? slipAt(vm.segs, vm.k) : null);
     const solved = !hasError && isComplete(target, tone, v);
-    setState({ ...s, value: v, wrong, solved, warn: null });
-    if (solved) onSolved(!wrong, v);
+    setState({ ...s, value: v, slip, solved, warn: null });
+    if (solved) onSolved(slip, v);
   };
 
   const reveal = () => {
-    setState(prev => ({ ...prev, wrong: true, revealed: true }));
+    setState(prev => ({ ...prev, slip: prev.slip ?? 'final', revealed: true }));
     focus();
   };
 

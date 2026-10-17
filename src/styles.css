@@ -1071,3 +1071,20 @@ a.btn {
 .pc .pyt.shake {
   animation: shake 0.3s;
 }
+/* 針對練習 */
+.drill-reason {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.drill-reason .note {
+  font-size: 12px;
+}
+.misses .miss-rule {
+  flex-basis: 100%;
+  font-size: 12px;
+  color: var(--muted);
+}

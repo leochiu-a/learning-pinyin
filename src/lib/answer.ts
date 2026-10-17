@@ -1,5 +1,5 @@
-import { ruleFor, stripTone } from './pinyin';
-import type { Syllables } from './types';
+import { ruleFor, splitInitial, stripTone } from './pinyin';
+import type { Slip, Syllables } from './types';
 
 /**
  * 每種可接受的打法（音節陣列），第一個是標準答案。
@@ -78,3 +78,17 @@ export function hintAt(it: Syllables, k: number, segs: string[]): Hint {
 
 /** 看答案時列出這題用到的規則 */
 export const rulesOf = (it: Syllables) => [...new Set(it.syl.map((s, i) => ruleFor(it.zs[i], stripTone(s))))];
+
+/** 第 k 個字打錯時，錯的是聲母、聲母以外的拼法，還是聲調數字 */
+export function slipAt(segs: string[], k: number): Slip {
+  let pos = 0;
+  for (const seg of segs) {
+    if (k < pos + seg.length) {
+      const i = k - pos;
+      if (/\d/.test(seg[i])) return 'tone';
+      return i < splitInitial(stripTone(seg))[0].length ? 'initial' : 'final';
+    }
+    pos += seg.length;
+  }
+  return 'final';
+}

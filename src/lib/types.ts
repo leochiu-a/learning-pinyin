@@ -55,3 +55,6 @@ export interface ArticleRecord {
   cpm: number;
   acc: number;
 }
+
+/** 一個字第一次出錯的地方：聲母、聲母以外的拼法（含看答案），或聲調數字 */
+export type Slip = 'initial' | 'final' | 'tone';

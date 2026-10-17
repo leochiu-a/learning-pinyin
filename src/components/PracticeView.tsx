@@ -34,7 +34,7 @@ export function PracticeView({ li, items, toneOn, onToneChange, onFinish, onQuit
   const typing = useSyllableTyping(it, {
     tone,
     unit: '題',
-    onSolved: ok => results.current.push({ it, ok }),
+    onSolved: slip => results.current.push({ it, ok: slip === null }),
   });
   const { solved, focus } = typing;
 

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { cleanInput, hintAt, isComplete, match, targetOf } from './answer';
+import { cleanInput, hintAt, isComplete, match, slipAt, targetOf } from './answer';
 import { COURSE, TONE_IDX, parseLine, toneApplies } from './course';
 
 const item = (line: string, li = TONE_IDX + 1) => parseLine(line, li);
@@ -64,5 +64,15 @@ describe('course data', () => {
       for (const x of l.pool) expect(x.zs.length, `${l.id} ${x.h}`).toBe(x.syl.length);
       for (const x of l.pool.filter(y => y.h)) expect([...x.h].length, `${l.id} ${x.h}`).toBe(x.syl.length);
     }
+  });
+});
+
+describe('slipAt', () => {
+  it('tells initial, final and tone mistakes apart', () => {
+    expect(slipAt(['zhen1'], 1)).toBe('initial');
+    expect(slipAt(['zhen1'], 2)).toBe('final');
+    expect(slipAt(['zhen1'], 4)).toBe('tone');
+    expect(slipAt(['tai2', 'wan1'], 4)).toBe('final');
+    expect(slipAt(['ye4'], 0)).toBe('final');
   });
 });

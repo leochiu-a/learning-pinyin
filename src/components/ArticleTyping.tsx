@@ -4,12 +4,13 @@ import { useSyllableTyping } from '../hooks/useSyllableTyping';
 import { charsPerMinute, type BuiltArticle } from '../lib/article';
 import { zyList } from '../lib/pinyin';
 import { canSpeak, speak } from '../lib/speech';
+import type { Slip } from '../lib/types';
 import { HintBox } from './HintBox';
 import { Keyboard } from './Keyboard';
 
 export interface ArticleRun {
-  /** 每個要打的字是否第一次就打對，順序同 article.slots */
-  firstTry: boolean[];
+  /** 每個要打的字第一次出錯的地方，沒錯過是 null；順序同 article.slots */
+  slips: (Slip | null)[];
   ms: number;
 }
 
@@ -25,7 +26,7 @@ interface Props {
 
 export function ArticleTyping({ article, toneOn, onToneChange, showZhuyin, onZhuyinChange, onFinish, onQuit }: Props) {
   const [pos, setPos] = useState(0);
-  const [firstTry, setFirstTry] = useState<boolean[]>([]);
+  const [slips, setSlips] = useState<(Slip | null)[]>([]);
   // 每個打完的字實際打出來的拼音，留在字的下方
   const [typed, setTyped] = useState<string[]>([]);
   // 從第一次按鍵開始計時，到最近一次打對為止
@@ -38,13 +39,13 @@ export function ArticleTyping({ article, toneOn, onToneChange, showZhuyin, onZhu
   const typing = useSyllableTyping(target, {
     tone: toneOn,
     unit: '字',
-    onSolved: (ok, value) => {
+    onSolved: (slip, value) => {
       const now = Date.now();
-      const marks = [...firstTry, ok];
-      setFirstTry(marks);
+      const marks = [...slips, slip];
+      setSlips(marks);
       setTyped(t => [...t, value]);
       setLastAt(now);
-      if (pos + 1 >= article.slots.length) onFinish({ firstTry: marks, ms: now - (startedAt ?? now) });
+      if (pos + 1 >= article.slots.length) onFinish({ slips: marks, ms: now - (startedAt ?? now) });
       else setPos(pos + 1);
     },
   });
@@ -70,8 +71,8 @@ export function ArticleTyping({ article, toneOn, onToneChange, showZhuyin, onZhu
     focus();
   };
 
-  const done = firstTry.length;
-  const ok = firstTry.filter(Boolean).length;
+  const done = slips.length;
+  const ok = slips.filter(x => x === null).length;
   const cpm = startedAt != null && lastAt != null ? charsPerMinute(done, lastAt - startedAt) : null;
   const slotIndex = new Map(article.slots.map((s, i) => [s, i]));
 
@@ -128,7 +129,15 @@ export function ArticleTyping({ article, toneOn, onToneChange, showZhuyin, onZhu
               {group.map(i => {
                 const c = article.chars[i];
                 const n = slotIndex.get(i);
-                const state = !c.target ? 'punct' : n === pos ? 'cur' : n! < pos ? (firstTry[n!] ? 'ok' : 'miss') : '';
+                const state = !c.target
+                  ? 'punct'
+                  : n === pos
+                    ? 'cur'
+                    : n! < pos
+                      ? slips[n!] === null
+                        ? 'ok'
+                        : 'miss'
+                      : '';
                 return (
                   <span key={i} ref={n === pos ? current : undefined} className={`pc ${state}`}>
                     <span className="zy">{showZhuyin && c.target ? zyList(c.target)[0] : ''}</span>
