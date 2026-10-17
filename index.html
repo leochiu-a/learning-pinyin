@@ -1,0 +1,982 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="給會注音的台灣人：12 步從單韻母到詞語，邊學注音拼音對照、邊練打拼音。">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>拼音步道</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Sans:wght@500;700&display=swap">
+<style>
+/* Layout: 左邊是一步一腳印的課程步道，右邊是工作台，切換「學習 / 打字練習 / 成績」。注音一律暖褐色、拼音一律綠色。 */
+:root {
+  --paper: #EDF2EF;
+  --card: #FFFFFF;
+  --ink: #17272A;
+  --muted: #5A6D69;
+  --line: #D2DCD7;
+  --py: #0A775C;
+  --py-soft: #DCEFE6;
+  --zy: #AD4E28;
+  --zy-soft: #F6E4D9;
+  --bad: #C13A33;
+  --bad-soft: #F9E1DF;
+  --key: #F6F9F7;
+  --key-edge: #C9D4CF;
+  --f-han: "LXGW WenKai TC", "Kaiti TC", "BiauKai", "DFKai-SB", serif;
+  --f-ui: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+  --f-py: "Noto Sans", "Noto Sans TC", system-ui, sans-serif;
+  --f-key: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  --r: 12px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #111A18; --card: #19241F; --ink: #E4ECE8; --muted: #92A59F; --line: #2B3A35;
+    --py: #4BCBA3; --py-soft: #1C3A30; --zy: #EB9F72; --zy-soft: #3B2619;
+    --bad: #F2766E; --bad-soft: #3D2220; --key: #1F2B27; --key-edge: #34443E;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #111A18; --card: #19241F; --ink: #E4ECE8; --muted: #92A59F; --line: #2B3A35;
+  --py: #4BCBA3; --py-soft: #1C3A30; --zy: #EB9F72; --zy-soft: #3B2619;
+  --bad: #F2766E; --bad-soft: #3D2220; --key: #1F2B27; --key-edge: #34443E;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--paper); color: var(--ink); font-family: var(--f-ui); font-size: 15px; line-height: 1.65; }
+button { font: inherit; color: inherit; cursor: pointer; }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--py); outline-offset: 2px; }
+kbd { font-family: var(--f-key); font-size: .9em; padding: 1px 6px; border: 1px solid var(--key-edge); border-bottom-width: 2px; border-radius: 5px; background: var(--key); }
+.zy { color: var(--zy); font-family: var(--f-han); }
+.py { color: var(--py); font-family: var(--f-py); }
+
+/* header */
+.top { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; max-width: 1140px; margin: 0 auto; padding: 20px 20px 8px; }
+.brand { display: flex; align-items: baseline; gap: 10px; margin-right: auto; }
+.brand h1 { margin: 0; font-family: var(--f-han); font-size: 28px; font-weight: 700; letter-spacing: .04em; }
+.brand span { color: var(--muted); font-size: 13px; }
+.views { display: flex; gap: 4px; background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 3px; }
+.views button { border: 0; background: none; padding: 5px 16px; border-radius: 999px; font-size: 14px; }
+.views button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.meter { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.meter b { color: var(--py); font-size: 16px; }
+
+/* app layout */
+.app { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 28px; max-width: 1140px; margin: 0 auto; padding: 12px 20px 48px; }
+@media (max-width: 860px) { .app { grid-template-columns: minmax(0, 1fr); gap: 16px; } }
+
+/* step trail */
+.trail { position: relative; margin: 0; padding: 0; list-style: none; }
+.trail::before { content: ""; position: absolute; left: 17px; top: 18px; bottom: 18px; border-left: 2px dotted var(--key-edge); }
+.trail li { position: relative; }
+.step { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; border: 0; background: none; padding: 7px 8px 7px 0; border-radius: 10px; }
+.step:hover:not(:disabled) .step-t { color: var(--py); }
+.step:disabled { cursor: not-allowed; opacity: .5; }
+.node { flex: none; width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; font-family: var(--f-key); font-size: 13px; font-weight: 700; background: var(--paper); border: 2px solid var(--key-edge); color: var(--muted); position: relative; z-index: 1; }
+.step.done .node { background: var(--py); border-color: var(--py); color: var(--card); }
+.step.on .node { border-color: var(--py); color: var(--py); box-shadow: 0 0 0 4px var(--py-soft); }
+.step-t { display: block; font-weight: 500; line-height: 1.3; }
+.step-s { display: block; font-size: 12px; color: var(--muted); font-family: var(--f-han); }
+.trail-foot { margin-top: 14px; padding-left: 48px; font-size: 12px; color: var(--muted); }
+.linkbtn { border: 0; background: none; padding: 0; color: var(--py); text-decoration: underline; text-underline-offset: 3px; font-size: 12px; }
+@media (max-width: 860px) {
+  .trail { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: thin; }
+  .trail::before { display: none; }
+  .step { flex-direction: column; gap: 4px; width: 76px; padding: 4px; text-align: center; }
+  .step-s { display: none; }
+  .step-t { font-size: 12px; }
+  .trail-foot { padding-left: 0; }
+}
+
+/* main panels */
+.panel { background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 28px clamp(16px, 4vw, 36px); min-width: 0; }
+.eyebrow { font-size: 12px; letter-spacing: .12em; color: var(--muted); margin: 0 0 4px; }
+.panel h2 { margin: 0 0 6px; font-family: var(--f-han); font-size: clamp(26px, 4vw, 34px); line-height: 1.25; text-wrap: balance; }
+.lede { margin: 0 0 20px; max-width: 62ch; color: var(--muted); }
+.tabs { display: flex; gap: 20px; border-bottom: 1px solid var(--line); margin: 0 0 24px; }
+.tabs button { border: 0; background: none; padding: 8px 0; border-bottom: 2px solid transparent; margin-bottom: -1px; color: var(--muted); font-weight: 500; }
+.tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--ink); }
+
+/* learn cards */
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; }
+.card { border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px 12px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.map { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.map .zy { font-size: 34px; line-height: 1.1; }
+.map .arrow { color: var(--muted); font-size: 14px; }
+.map .py { font-size: 28px; font-weight: 700; line-height: 1.1; }
+.ex { display: flex; align-items: center; gap: 8px; border-top: 1px dashed var(--line); padding-top: 8px; font-size: 14px; }
+.ex .han { font-family: var(--f-han); font-size: 20px; }
+.ex .py { font-weight: 500; }
+.ex .zy { font-size: 14px; }
+.note { font-size: 13px; color: var(--muted); margin: 0; }
+.say { margin-left: auto; flex: none; width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--line); background: var(--card); display: grid; place-items: center; color: var(--muted); }
+.say:hover { color: var(--py); border-color: var(--py); }
+.say svg { width: 15px; height: 15px; }
+.traps { margin: 24px 0 0; padding: 16px 18px; border-radius: 10px; background: var(--zy-soft); }
+.traps h3 { margin: 0 0 6px; font-size: 14px; color: var(--zy); letter-spacing: .06em; }
+.traps ul { margin: 0; padding-left: 1.2em; display: grid; gap: 4px; }
+.go { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 24px; }
+.btn { border: 1px solid var(--ink); background: var(--ink); color: var(--paper); padding: 10px 22px; border-radius: 999px; font-weight: 500; }
+.btn.ghost { background: none; color: var(--ink); border-color: var(--line); }
+.btn:hover { opacity: .88; }
+.go small { color: var(--muted); }
+
+/* practice */
+.pbar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; margin-bottom: 18px; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.bar { flex: 1 1 140px; height: 6px; border-radius: 3px; background: var(--paper); overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--py); transition: width .3s; }
+.toggle { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+.toggle input { accent-color: var(--py); width: 16px; height: 16px; }
+.toggle.off { opacity: .55; cursor: default; }
+.stage { position: relative; border: 1px solid var(--line); border-radius: 12px; padding: 26px 16px 22px; display: flex; flex-direction: column; align-items: center; gap: 18px; cursor: text; background:
+  repeating-linear-gradient(to bottom, transparent 0 31px, var(--paper) 31px 32px); }
+.prompt { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; align-items: flex-end; }
+.glyph { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.glyph .han { font-family: var(--f-han); font-size: clamp(48px, 9vw, 72px); line-height: 1.05; }
+.glyph .zy { font-size: 18px; line-height: 1.2; }
+.prompt .solo { font-size: clamp(64px, 12vw, 96px); line-height: 1; }
+.ask { font-size: 13px; color: var(--muted); margin: -8px 0 0; }
+.typed { min-height: 58px; display: flex; align-items: center; justify-content: center; flex-wrap: wrap; font-family: var(--f-key); font-size: clamp(30px, 6vw, 42px); font-weight: 700; letter-spacing: .04em; max-width: 100%; }
+.typed .ok { color: var(--py); }
+.typed .bad { color: var(--bad); background: var(--bad-soft); border-radius: 4px; }
+.typed .ph { color: var(--muted); font-size: 16px; font-weight: 500; font-family: var(--f-ui); letter-spacing: 0; }
+.caret { display: inline-block; width: 3px; height: 1em; background: var(--ink); margin-left: 2px; animation: blink 1s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+.typed.win { color: var(--py); }
+.typed.shake { animation: shake .3s; }
+@keyframes shake { 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+.answer { font-family: var(--f-py); font-size: 22px; color: var(--py); min-height: 1.4em; margin-top: -10px; }
+#ime { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; font-size: 16px; border: 0; cursor: text; }
+.hint { margin-top: 14px; padding: 12px 16px; border-radius: 10px; background: var(--bad-soft); border-left: 3px solid var(--bad); font-size: 14px; }
+.hint.reveal { background: var(--py-soft); border-left-color: var(--py); }
+.hint b { font-family: var(--f-py); }
+.row-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; align-items: center; margin-top: 14px; }
+.row-actions .btn { padding: 7px 16px; font-size: 14px; }
+
+/* keyboard */
+.kbd { margin-top: 20px; display: grid; gap: 6px; justify-content: center; overflow-x: auto; padding-bottom: 4px; }
+.krow { display: flex; gap: 5px; }
+.krow:nth-child(2) { padding-left: 18px; } .krow:nth-child(3) { padding-left: 30px; } .krow:nth-child(4) { padding-left: 50px; }
+.k { position: relative; width: clamp(28px, 6.4vw, 44px); height: clamp(34px, 7vw, 46px); border-radius: 7px; background: var(--key); border: 1px solid var(--key-edge); border-bottom-width: 3px; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1; transition: transform .08s, background .15s; }
+.k .l { font-family: var(--f-key); font-size: clamp(12px, 2.4vw, 15px); font-weight: 700; }
+.k .z { font-family: var(--f-han); font-size: clamp(9px, 1.8vw, 11px); color: var(--zy); margin-top: 3px; }
+.k .u { position: absolute; top: 2px; right: 3px; font-family: var(--f-py); font-size: 9px; color: var(--py); font-weight: 700; }
+.k.next { background: var(--py); border-color: var(--py); }
+.k.next .l, .k.next .z, .k.next .u { color: var(--card); }
+.k.press { transform: translateY(2px); border-bottom-width: 1px; }
+.kcap { text-align: center; font-size: 12px; color: var(--muted); margin: 8px 0 0; }
+
+/* result */
+.score { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 28px; }
+.big { font-family: var(--f-key); font-size: clamp(48px, 10vw, 72px); font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
+.pill { display: inline-block; padding: 3px 12px; border-radius: 999px; font-size: 13px; font-weight: 700; }
+.pill.pass { background: var(--py-soft); color: var(--py); }
+.pill.retry { background: var(--zy-soft); color: var(--zy); }
+.misses { margin: 22px 0 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 8px; }
+.misses li { border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.misses .han { font-family: var(--f-han); font-size: 20px; }
+
+/* table */
+.tgroup { margin-top: 26px; }
+.tgroup h3 { margin: 0 0 10px; font-size: 13px; letter-spacing: .1em; color: var(--muted); font-weight: 500; }
+.tgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 8px; }
+.cell { border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; display: flex; flex-direction: column; gap: 2px; position: relative; }
+.cell .zy { font-size: 24px; line-height: 1.2; }
+.cell .py { font-size: 17px; font-weight: 700; line-height: 1.2; }
+.cell small { font-size: 11px; color: var(--muted); }
+.cell.trap { border-color: var(--zy); background: var(--zy-soft); }
+.legend { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
+.legend i { width: 14px; height: 14px; border-radius: 4px; border: 1px solid var(--zy); background: var(--zy-soft); }
+
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+
+</head>
+<body>
+<header class="top">
+  <div class="brand"><h1>拼音步道</h1><span>用你會的注音，一步一步學會打拼音</span></div>
+  <div class="views" role="group" aria-label="切換頁面">
+    <button id="v-lesson" aria-pressed="true">課程</button>
+    <button id="v-table" aria-pressed="false">注音拼音對照表</button>
+  </div>
+  <div class="meter" id="meter"></div>
+</header>
+<div class="app">
+  <nav aria-label="課程步道"><ol class="trail" id="trail"></ol><div class="trail-foot" id="trailFoot"></div></nav>
+  <main id="main" class="panel"></main>
+</div>
+
+<script>
+// ---------- 課程資料 ----------
+// 練習題格式：漢字 拼音(數字標調,多音節用逗號) 注音(不含聲調,逗號分隔)；「-」代表只考注音符號
+const LESSONS = [
+  { id: 'vowel', title: '單韻母', sub: 'ㄚㄛㄜㄧㄨㄩ',
+    intro: '注音的 ㄚㄛㄜㄧㄨㄩ，在拼音裡就是 a o e i u ü。所有拼音都由它們組成，先把這六個記熟。',
+    rows: [
+      { z: 'ㄚ', p: 'a', ex: '阿 a1 ㄚ' },
+      { z: 'ㄛ', p: 'o', ex: '喔 o1 ㄛ' },
+      { z: 'ㄜ', p: 'e', ex: '鵝 e2 ㄜ', note: '拼音的 e 唸 ㄜ，不是英文的 e。' },
+      { z: 'ㄧ', p: 'i', ex: '衣 yi1 ㄧ', note: '單獨成字時寫成 yi。' },
+      { z: 'ㄨ', p: 'u', ex: '屋 wu1 ㄨ', note: '單獨成字時寫成 wu。' },
+      { z: 'ㄩ', p: 'ü', ex: '魚 yu2 ㄩ', note: '鍵盤打 v；單獨成字時寫成 yu。' },
+    ],
+    traps: ['鍵盤上沒有 ü，拼音輸入法一律用 v 代替。', 'ㄧ ㄨ ㄩ 單獨成一個字時，要寫成 yi、wu、yu。第 9 到 11 步會再細講。', '這一步先不打聲調，只練字母。'],
+    items: `- a ㄚ
+- o ㄛ
+- e ㄜ
+- i ㄧ
+- u ㄨ
+- v ㄩ
+阿 a1 ㄚ
+鵝 e2 ㄜ
+衣 yi1 ㄧ
+屋 wu1 ㄨ
+魚 yu2 ㄩ` },
+
+  { id: 'lips', title: '第一批聲母', sub: 'ㄅㄆㄇㄈ ㄉㄊㄋㄌ',
+    intro: '聲母就是注音開頭那一排。這 8 個和英文字母很像，最好上手。拼法跟注音一樣是「聲母＋韻母」：ㄅ＋ㄚ ＝ b＋a ＝ ba。',
+    rows: [
+      { z: 'ㄅ', p: 'b', ex: '爸 ba4 ㄅㄚ' }, { z: 'ㄆ', p: 'p', ex: '爬 pa2 ㄆㄚ' },
+      { z: 'ㄇ', p: 'm', ex: '媽 ma1 ㄇㄚ' }, { z: 'ㄈ', p: 'f', ex: '發 fa1 ㄈㄚ' },
+      { z: 'ㄉ', p: 'd', ex: '大 da4 ㄉㄚ' }, { z: 'ㄊ', p: 't', ex: '他 ta1 ㄊㄚ' },
+      { z: 'ㄋ', p: 'n', ex: '拿 na2 ㄋㄚ' }, { z: 'ㄌ', p: 'l', ex: '拉 la1 ㄌㄚ' },
+    ],
+    traps: ['拼音的 b、d 唸 ㄅ、ㄉ（不送氣），p、t 才是送氣的 ㄆ、ㄊ。', 'ㄋㄩ、ㄌㄩ 要保留 ü，打成 nv、lv（女 nv、綠 lv）。', '這一步先不打聲調，只練字母。'],
+    items: `爸 ba4 ㄅㄚ
+爬 pa2 ㄆㄚ
+媽 ma1 ㄇㄚ
+發 fa1 ㄈㄚ
+大 da4 ㄉㄚ
+他 ta1 ㄊㄚ
+拿 na2 ㄋㄚ
+拉 la1 ㄌㄚ
+波 bo1 ㄅㄛ
+摸 mo1 ㄇㄛ
+佛 fo2 ㄈㄛ
+得 de2 ㄉㄜ
+特 te4 ㄊㄜ
+樂 le4 ㄌㄜ
+筆 bi3 ㄅㄧ
+皮 pi2 ㄆㄧ
+米 mi3 ㄇㄧ
+地 di4 ㄉㄧ
+你 ni3 ㄋㄧ
+力 li4 ㄌㄧ
+不 bu4 ㄅㄨ
+木 mu4 ㄇㄨ
+父 fu4 ㄈㄨ
+讀 du2 ㄉㄨ
+土 tu3 ㄊㄨ
+路 lu4 ㄌㄨ
+女 nv3 ㄋㄩ
+綠 lv4 ㄌㄩ` },
+
+  { id: 'velar', title: '舌根音', sub: 'ㄍㄎㄏ',
+    intro: 'ㄍㄎㄏ 寫成 g k h。g 在拼音裡永遠唸 ㄍ，不會變成英文 gin 那種 ㄐ 的音。',
+    rows: [
+      { z: 'ㄍ', p: 'g', ex: '哥 ge1 ㄍㄜ' }, { z: 'ㄎ', p: 'k', ex: '渴 ke3 ㄎㄜ' }, { z: 'ㄏ', p: 'h', ex: '喝 he1 ㄏㄜ' },
+    ],
+    traps: ['ge、ke、he 的 e 都唸 ㄜ。', 'h 是 ㄏ，比英文的 h 用力，有摩擦聲。'],
+    items: `哥 ge1 ㄍㄜ
+個 ge4 ㄍㄜ
+渴 ke3 ㄎㄜ
+課 ke4 ㄎㄜ
+喝 he1 ㄏㄜ
+河 he2 ㄏㄜ
+嘎 ga1 ㄍㄚ
+卡 ka3 ㄎㄚ
+哈 ha1 ㄏㄚ
+古 gu3 ㄍㄨ
+哭 ku1 ㄎㄨ
+湖 hu2 ㄏㄨ
+苦 ku3 ㄎㄨ
+父 fu4 ㄈㄨ
+特 te4 ㄊㄜ` },
+
+  { id: 'tone', title: '四聲與輕聲', sub: 'ˉ ˊ ˇ ˋ ˙',
+    intro: '注音的 ˉ ˊ ˇ ˋ ˙，拼音改成標在母音上的符號 ā á ǎ à，輕聲不標。打字時在每個音節後面加數字 1 到 5。從這一步開始，練習都要打聲調。',
+    rows: [
+      { z: 'ˉ', p: 'ā · 1', ex: '媽 ma1 ㄇㄚ', note: '一聲' }, { z: 'ˊ', p: 'á · 2', ex: '麻 ma2 ㄇㄚ', note: '二聲' },
+      { z: 'ˇ', p: 'ǎ · 3', ex: '馬 ma3 ㄇㄚ', note: '三聲' }, { z: 'ˋ', p: 'à · 4', ex: '罵 ma4 ㄇㄚ', note: '四聲' },
+      { z: '˙', p: '不標 · 5', ex: '嗎 ma5 ㄇㄚ', note: '輕聲' },
+    ],
+    traps: ['聲調標在哪：有 a 標 a，沒有 a 就找 o 或 e，iu、ui 標在後面那個。例：hǎo、duō、liù、duì。', '注音輸入法的一聲是空白鍵、輕聲是 7；這裡統一打 1 到 5，輕聲打 5。', '注音的輕聲 ˙ 寫在最前面，拼音的輕聲什麼都不標。'],
+    items: `媽 ma1 ㄇㄚ
+麻 ma2 ㄇㄚ
+馬 ma3 ㄇㄚ
+罵 ma4 ㄇㄚ
+嗎 ma5 ㄇㄚ
+八 ba1 ㄅㄚ
+拔 ba2 ㄅㄚ
+把 ba3 ㄅㄚ
+姨 yi2 ㄧ
+椅 yi3 ㄧ
+意 yi4 ㄧ
+呼 hu1 ㄏㄨ
+虎 hu3 ㄏㄨ
+戶 hu4 ㄏㄨ
+的 de5 ㄉㄜ
+了 le5 ㄌㄜ
+呢 ne5 ㄋㄜ
+魚 yu2 ㄩ` },
+
+  { id: 'jqx', title: '舌面音', sub: 'ㄐㄑㄒ',
+    intro: 'ㄐㄑㄒ 寫成 j q x。它們只會接 ㄧ 或 ㄩ。接 ㄩ 的時候，ü 上的兩點省略，寫成 u。',
+    rows: [
+      { z: 'ㄐ', p: 'j', ex: '雞 ji1 ㄐㄧ' }, { z: 'ㄑ', p: 'q', ex: '七 qi1 ㄑㄧ' }, { z: 'ㄒ', p: 'x', ex: '西 xi1 ㄒㄧ' },
+      { z: 'ㄐㄩ', p: 'ju', ex: '句 ju4 ㄐㄩ', note: '這個 u 其實是 ü。' },
+    ],
+    traps: ['ju、qu、xu 的 u 唸 ㄩ，因為 ㄐㄑㄒ 不會接 ㄨ。打字打 u，不用打 v。', 'q 唸 ㄑ，x 唸 ㄒ，跟英文完全不同，多打幾次就記住了。', 'ㄧㄚ 是 ia、ㄧㄝ 是 ie，第 9 步會完整整理。'],
+    items: `雞 ji1 ㄐㄧ
+幾 ji3 ㄐㄧ
+七 qi1 ㄑㄧ
+起 qi3 ㄑㄧ
+西 xi1 ㄒㄧ
+洗 xi3 ㄒㄧ
+句 ju4 ㄐㄩ
+局 ju2 ㄐㄩ
+去 qu4 ㄑㄩ
+取 qu3 ㄑㄩ
+需 xu1 ㄒㄩ
+許 xu3 ㄒㄩ
+家 jia1 ㄐㄧㄚ
+下 xia4 ㄒㄧㄚ
+姐 jie3 ㄐㄧㄝ
+謝 xie4 ㄒㄧㄝ` },
+
+  { id: 'retro', title: '翹舌與平舌', sub: 'ㄓㄔㄕㄖ ㄗㄘㄙ',
+    intro: '翹舌音 ㄓㄔㄕㄖ 寫成 zh ch sh r，平舌音 ㄗㄘㄙ 寫成 z c s。注音可以只寫一個 ㄓ，拼音不行，一定要補一個 i。',
+    rows: [
+      { z: 'ㄓ', p: 'zh', ex: '知 zhi1 ㄓ' }, { z: 'ㄔ', p: 'ch', ex: '吃 chi1 ㄔ' },
+      { z: 'ㄕ', p: 'sh', ex: '詩 shi1 ㄕ' }, { z: 'ㄖ', p: 'r', ex: '日 ri4 ㄖ' },
+      { z: 'ㄗ', p: 'z', ex: '字 zi4 ㄗ' }, { z: 'ㄘ', p: 'c', ex: '次 ci4 ㄘ' }, { z: 'ㄙ', p: 's', ex: '四 si4 ㄙ' },
+    ],
+    traps: ['單獨的 ㄓㄔㄕㄖㄗㄘㄙ 要寫成 zhi chi shi ri zi ci si，這個 i 不唸 ㄧ。', '多一個 h 就是翹舌：z→zh、c→ch、s→sh。', 'c 唸 ㄘ，不是 k；r 唸 ㄖ，不是英文的 r。'],
+    items: `知 zhi1 ㄓ
+紙 zhi3 ㄓ
+吃 chi1 ㄔ
+尺 chi3 ㄔ
+詩 shi1 ㄕ
+十 shi2 ㄕ
+是 shi4 ㄕ
+日 ri4 ㄖ
+字 zi4 ㄗ
+次 ci4 ㄘ
+四 si4 ㄙ
+炸 zha4 ㄓㄚ
+茶 cha2 ㄔㄚ
+沙 sha1 ㄕㄚ
+熱 re4 ㄖㄜ
+雜 za2 ㄗㄚ
+擦 ca1 ㄘㄚ
+色 se4 ㄙㄜ
+豬 zhu1 ㄓㄨ
+書 shu1 ㄕㄨ
+租 zu1 ㄗㄨ
+粗 cu1 ㄘㄨ` },
+
+  { id: 'diph', title: '複韻母', sub: 'ㄞㄟㄠㄡ ㄦ',
+    intro: '複韻母就是兩個母音連在一起：ㄞ ＝ ai、ㄟ ＝ ei、ㄠ ＝ ao、ㄡ ＝ ou，捲舌的 ㄦ 寫成 er。',
+    rows: [
+      { z: 'ㄞ', p: 'ai', ex: '愛 ai4 ㄞ' }, { z: 'ㄟ', p: 'ei', ex: '黑 hei1 ㄏㄟ' },
+      { z: 'ㄠ', p: 'ao', ex: '好 hao3 ㄏㄠ' }, { z: 'ㄡ', p: 'ou', ex: '口 kou3 ㄎㄡ' }, { z: 'ㄦ', p: 'er', ex: '二 er4 ㄦ' },
+    ],
+    traps: ['ㄠ 是 ao，不是 au。', 'ㄡ 是 ou，不是 o 或 ow。', 'ㄟ 是 ei，不要打成 ay。'],
+    items: `愛 ai4 ㄞ
+白 bai2 ㄅㄞ
+來 lai2 ㄌㄞ
+菜 cai4 ㄘㄞ
+黑 hei1 ㄏㄟ
+給 gei3 ㄍㄟ
+美 mei3 ㄇㄟ
+飛 fei1 ㄈㄟ
+好 hao3 ㄏㄠ
+高 gao1 ㄍㄠ
+跑 pao3 ㄆㄠ
+少 shao3 ㄕㄠ
+口 kou3 ㄎㄡ
+走 zou3 ㄗㄡ
+手 shou3 ㄕㄡ
+都 dou1 ㄉㄡ
+二 er4 ㄦ
+兒 er2 ㄦ
+耳 er3 ㄦ` },
+
+  { id: 'nasal', title: '鼻音韻母', sub: 'ㄢㄣㄤㄥ',
+    intro: '鼻音韻母：ㄢ an、ㄣ en、ㄤ ang、ㄥ eng。ㄨㄥ 比較特別，寫成 ong。',
+    rows: [
+      { z: 'ㄢ', p: 'an', ex: '安 an1 ㄢ' }, { z: 'ㄣ', p: 'en', ex: '門 men2 ㄇㄣ' },
+      { z: 'ㄤ', p: 'ang', ex: '糖 tang2 ㄊㄤ' }, { z: 'ㄥ', p: 'eng', ex: '風 feng1 ㄈㄥ' },
+      { z: 'ㄨㄥ', p: 'ong', ex: '東 dong1 ㄉㄨㄥ', note: '不是 ung。' },
+    ],
+    traps: ['結尾是 n 的是 ㄢㄣ，結尾是 ng 的是 ㄤㄥ。', 'ㄨㄥ 寫 ong：東 dōng、紅 hóng、中 zhōng。', 'ㄅㄥ ㄆㄥ ㄇㄥ ㄈㄥ 寫成 beng peng meng feng。'],
+    items: `安 an1 ㄢ
+山 shan1 ㄕㄢ
+看 kan4 ㄎㄢ
+飯 fan4 ㄈㄢ
+門 men2 ㄇㄣ
+人 ren2 ㄖㄣ
+很 hen3 ㄏㄣ
+本 ben3 ㄅㄣ
+忙 mang2 ㄇㄤ
+糖 tang2 ㄊㄤ
+上 shang4 ㄕㄤ
+長 chang2 ㄔㄤ
+風 feng1 ㄈㄥ
+冷 leng3 ㄌㄥ
+等 deng3 ㄉㄥ
+朋 peng2 ㄆㄥ
+東 dong1 ㄉㄨㄥ
+紅 hong2 ㄏㄨㄥ
+中 zhong1 ㄓㄨㄥ
+龍 long2 ㄌㄨㄥ` },
+
+  { id: 'yi', title: 'ㄧ 開頭的韻母', sub: 'ㄧㄚ ㄧㄝ ㄧㄡ ㄧㄢ…',
+    intro: 'ㄧ 開頭的韻母有兩種寫法：前面有聲母時照拼（ㄒㄧㄚ ＝ xia），前面沒有聲母時把 i 改成 y（ㄧㄚ ＝ ya）。',
+    rows: [
+      { z: 'ㄧㄚ', p: 'ia / ya', ex: '家 jia1 ㄐㄧㄚ' }, { z: 'ㄧㄝ', p: 'ie / ye', ex: '鞋 xie2 ㄒㄧㄝ' },
+      { z: 'ㄧㄠ', p: 'iao / yao', ex: '小 xiao3 ㄒㄧㄠ' },
+      { z: 'ㄧㄡ', p: 'iu / you', ex: '六 liu4 ㄌㄧㄡ', note: '有聲母時縮寫成 iu。' },
+      { z: 'ㄧㄢ', p: 'ian / yan', ex: '天 tian1 ㄊㄧㄢ' },
+      { z: 'ㄧㄣ', p: 'in / yin', ex: '心 xin1 ㄒㄧㄣ', note: '不是 ien。' },
+      { z: 'ㄧㄤ', p: 'iang / yang', ex: '想 xiang3 ㄒㄧㄤ' }, { z: 'ㄧㄥ', p: 'ing / ying', ex: '名 ming2 ㄇㄧㄥ' },
+      { z: 'ㄩㄥ', p: 'iong / yong', ex: '熊 xiong2 ㄒㄩㄥ', note: '注音是 ㄩ，拼音卻寫 io。' },
+    ],
+    traps: ['ㄧㄡ 有聲母時寫 iu（六 liù），沒有聲母寫 you（有 yǒu）。', 'ㄧㄣ、ㄧㄥ 沒聲母時寫 yin、ying，不是 yien、yieng。', 'ㄧㄝ 的 ㄝ 用 e 表示：ie、ye。'],
+    items: `牙 ya2 ㄧㄚ
+也 ye3 ㄧㄝ
+要 yao4 ㄧㄠ
+有 you3 ㄧㄡ
+眼 yan3 ㄧㄢ
+音 yin1 ㄧㄣ
+羊 yang2 ㄧㄤ
+英 ying1 ㄧㄥ
+用 yong4 ㄩㄥ
+鞋 xie2 ㄒㄧㄝ
+小 xiao3 ㄒㄧㄠ
+六 liu4 ㄌㄧㄡ
+九 jiu3 ㄐㄧㄡ
+天 tian1 ㄊㄧㄢ
+錢 qian2 ㄑㄧㄢ
+林 lin2 ㄌㄧㄣ
+心 xin1 ㄒㄧㄣ
+兩 liang3 ㄌㄧㄤ
+想 xiang3 ㄒㄧㄤ
+名 ming2 ㄇㄧㄥ
+聽 ting1 ㄊㄧㄥ
+窮 qiong2 ㄑㄩㄥ
+熊 xiong2 ㄒㄩㄥ` },
+
+  { id: 'wu', title: 'ㄨ 開頭的韻母', sub: 'ㄨㄚ ㄨㄛ ㄨㄟ ㄨㄣ…',
+    intro: 'ㄨ 開頭也一樣：有聲母照拼（ㄏㄨㄚ ＝ hua），沒有聲母把 u 改成 w（ㄨㄚ ＝ wa）。另外有兩個縮寫要特別記。',
+    rows: [
+      { z: 'ㄨㄚ', p: 'ua / wa', ex: '花 hua1 ㄏㄨㄚ' }, { z: 'ㄨㄛ', p: 'uo / wo', ex: '說 shuo1 ㄕㄨㄛ' },
+      { z: 'ㄨㄞ', p: 'uai / wai', ex: '快 kuai4 ㄎㄨㄞ' },
+      { z: 'ㄨㄟ', p: 'ui / wei', ex: '對 dui4 ㄉㄨㄟ', note: '有聲母時縮寫成 ui。' },
+      { z: 'ㄨㄢ', p: 'uan / wan', ex: '短 duan3 ㄉㄨㄢ' },
+      { z: 'ㄨㄣ', p: 'un / wen', ex: '春 chun1 ㄔㄨㄣ', note: '有聲母時縮寫成 un。' },
+      { z: 'ㄨㄤ', p: 'uang / wang', ex: '光 guang1 ㄍㄨㄤ' },
+    ],
+    traps: ['ㄨㄟ 有聲母寫 ui（水 shuǐ），沒聲母寫 wei（為 wèi）。', 'ㄨㄣ 有聲母寫 un（春 chūn），沒聲母寫 wen（問 wèn）。', 'ㄅㄆㄇㄈ 後面只寫 o（波 bō），其他聲母後面的 ㄨㄛ 寫 uo（多 duō）。'],
+    items: `蛙 wa1 ㄨㄚ
+我 wo3 ㄨㄛ
+外 wai4 ㄨㄞ
+為 wei4 ㄨㄟ
+晚 wan3 ㄨㄢ
+問 wen4 ㄨㄣ
+王 wang2 ㄨㄤ
+花 hua1 ㄏㄨㄚ
+說 shuo1 ㄕㄨㄛ
+多 duo1 ㄉㄨㄛ
+快 kuai4 ㄎㄨㄞ
+對 dui4 ㄉㄨㄟ
+水 shui3 ㄕㄨㄟ
+會 hui4 ㄏㄨㄟ
+短 duan3 ㄉㄨㄢ
+船 chuan2 ㄔㄨㄢ
+春 chun1 ㄔㄨㄣ
+順 shun4 ㄕㄨㄣ
+光 guang1 ㄍㄨㄤ
+床 chuang2 ㄔㄨㄤ` },
+
+  { id: 'yu', title: 'ㄩ 開頭的韻母', sub: 'ㄩㄝ ㄩㄢ ㄩㄣ',
+    intro: 'ㄩ 開頭有三種情況：沒有聲母寫 yu（ㄩㄝ ＝ yue），接 ㄐㄑㄒ 寫 u（ㄒㄩㄝ ＝ xue），只有接 ㄋㄌ 才保留 ü（ㄌㄩㄝ ＝ lüe，打 lve）。',
+    rows: [
+      { z: 'ㄩㄝ', p: 'üe / yue', ex: '月 yue4 ㄩㄝ' }, { z: 'ㄩㄢ', p: 'üan / yuan', ex: '遠 yuan3 ㄩㄢ' },
+      { z: 'ㄩㄣ', p: 'ün / yun', ex: '雲 yun2 ㄩㄣ' },
+      { z: 'ㄒㄩㄝ', p: 'xue', ex: '學 xue2 ㄒㄩㄝ', note: 'ㄐㄑㄒ 後面寫 u。' },
+      { z: 'ㄌㄩㄝ', p: 'lüe', ex: '略 lve4 ㄌㄩㄝ', note: '打字打 lve。' },
+    ],
+    traps: ['只有 ㄋㄩ、ㄌㄩ 這一系列要打 v：nv、lv、nve、lve。', 'ㄐㄑㄒ 和 y 後面的 ü 一律寫 u：jue、quan、xun、yuan。'],
+    items: `魚 yu2 ㄩ
+月 yue4 ㄩㄝ
+遠 yuan3 ㄩㄢ
+雲 yun2 ㄩㄣ
+學 xue2 ㄒㄩㄝ
+覺 jue2 ㄐㄩㄝ
+缺 que1 ㄑㄩㄝ
+全 quan2 ㄑㄩㄢ
+選 xuan3 ㄒㄩㄢ
+卷 juan3 ㄐㄩㄢ
+軍 jun1 ㄐㄩㄣ
+群 qun2 ㄑㄩㄣ
+訓 xun4 ㄒㄩㄣ
+略 lve4 ㄌㄩㄝ
+虐 nve4 ㄋㄩㄝ
+女 nv3 ㄋㄩ` },
+
+  { id: 'words', title: '詞語實戰', sub: '一次打一整個詞',
+    intro: '把前面學的組起來，一次打一個詞。音節之間不用空格，打對了會自動換下一題。',
+    rows: [
+      { z: '三聲連讀', p: 'nǐ hǎo', ex: '你好 ni3,hao3 ㄋㄧ,ㄏㄠ', note: '唸的時候會變調，拼音照原來的聲調寫。' },
+      { z: '隔音符號', p: "zǎo'ān", ex: '早安 zao3,an1 ㄗㄠ,ㄢ', note: "a o e 開頭的音節前面加 '，打字時不用打。" },
+      { z: 'ü 不變', p: 'lǜsè', ex: '綠色 lv4,se4 ㄌㄩ,ㄙㄜ', note: '詞裡的 ㄌㄩ 一樣打 lv。' },
+    ],
+    traps: ['一個詞的音節連著寫：Táiwān、diànnǎo。', '每個音節後面都要打聲調數字，例如 tai2wan1。'],
+    items: `台灣 tai2,wan1 ㄊㄞ,ㄨㄢ
+你好 ni3,hao3 ㄋㄧ,ㄏㄠ
+朋友 peng2,you3 ㄆㄥ,ㄧㄡ
+喜歡 xi3,huan1 ㄒㄧ,ㄏㄨㄢ
+學習 xue2,xi2 ㄒㄩㄝ,ㄒㄧ
+中文 zhong1,wen2 ㄓㄨㄥ,ㄨㄣ
+拼音 pin1,yin1 ㄆㄧㄣ,ㄧㄣ
+電腦 dian4,nao3 ㄉㄧㄢ,ㄋㄠ
+手機 shou3,ji1 ㄕㄡ,ㄐㄧ
+珍珠奶茶 zhen1,zhu1,nai3,cha2 ㄓㄣ,ㄓㄨ,ㄋㄞ,ㄔㄚ
+捷運 jie2,yun4 ㄐㄧㄝ,ㄩㄣ
+便利商店 bian4,li4,shang1,dian4 ㄅㄧㄢ,ㄌㄧ,ㄕㄤ,ㄉㄧㄢ
+吃飯 chi1,fan4 ㄔ,ㄈㄢ
+下雨 xia4,yu3 ㄒㄧㄚ,ㄩ
+綠色 lv4,se4 ㄌㄩ,ㄙㄜ
+女生 nv3,sheng1 ㄋㄩ,ㄕㄥ
+再見 zai4,jian4 ㄗㄞ,ㄐㄧㄢ
+早安 zao3,an1 ㄗㄠ,ㄢ
+夜市 ye4,shi4 ㄧㄝ,ㄕ
+颱風 tai2,feng1 ㄊㄞ,ㄈㄥ
+我愛你 wo3,ai4,ni3 ㄨㄛ,ㄞ,ㄋㄧ
+熱水 re4,shui3 ㄖㄜ,ㄕㄨㄟ
+春天 chun1,tian1 ㄔㄨㄣ,ㄊㄧㄢ
+月亮 yue4,liang4 ㄩㄝ,ㄌㄧㄤ` },
+
+  { id: 'mix', title: '隨機挑戰', sub: '從走過的步驟出題',
+    intro: '從你已經完成的步驟裡隨機抽 15 題，混在一起考。適合每天打開來暖身。',
+    rows: [], traps: [], items: '' },
+];
+const TONE_IDX = LESSONS.findIndex(l => l.id === 'tone');
+const PASS = 0.8;
+
+function parseLine(line, li) {
+  const [h, p, z] = line.trim().split(/\s+/);
+  return { h: h === '-' ? '' : h, syl: p.split(','), zs: z.split(','), li };
+}
+LESSONS.forEach((l, li) => {
+  l.pool = l.items.trim() ? l.items.trim().split('\n').map(s => parseLine(s, li)) : [];
+  l.rows.forEach(r => { if (r.ex) r.exItem = parseLine(r.ex, li); });
+});
+
+// ---------- 拼音 / 注音工具 ----------
+const MARKS = { a: 'āáǎà', e: 'ēéěè', i: 'īíǐì', o: 'ōóǒò', u: 'ūúǔù', 'ü': 'ǖǘǚǜ' };
+const toneOf = s => { const m = s.match(/([1-5])$/); return m ? +m[1] : 0; };
+function mark(s) {
+  const t = toneOf(s);
+  const w = s.replace(/[1-5]$/, '').replace(/v/g, 'ü');
+  if (!t || t === 5) return w;
+  let i = w.indexOf('a');
+  if (i < 0) i = w.indexOf('e');
+  if (i < 0 && w.includes('ou')) i = w.indexOf('o');
+  if (i < 0) for (let k = w.length - 1; k >= 0; k--) if ('aeiouü'.includes(w[k])) { i = k; break; }
+  return i < 0 ? w : w.slice(0, i) + MARKS[w[i]][t - 1] + w.slice(i + 1);
+}
+const pyOf = it => it.syl.map((s, i) => (i > 0 && /^[aoe]/.test(s) ? "'" : '') + mark(s)).join('');
+const zyTone = (z, t) => t === 5 ? '˙' + z : z + (['', '', 'ˊ', 'ˇ', 'ˋ'][t] || '');
+const zyList = it => it.zs.map((z, i) => zyTone(z, toneOf(it.syl[i] || '')));
+
+function ruleFor(z, p) {
+  if (/^(zh|ch|sh|r|z|c|s)i$/.test(p) && z.length === 1) return `${z} 單獨出現時要補上 i，寫成 ${p}（這個 i 不唸 ㄧ）。`;
+  if (p === 'yi' || p === 'wu' || p === 'yu') return `單獨的 ${z} 要寫成 ${p}。`;
+  if (p === 'v') return 'ㄩ 在鍵盤上用 v 代替。';
+  if (/^[jqx]u/.test(p)) return `ㄐㄑㄒ 後面的 ㄩ 省略兩點寫成 u：${z} → ${p}。`;
+  if (p.includes('v')) return `ㄋㄩ、ㄌㄩ 的 ü 要保留，鍵盤上用 v 代替：${z} → ${p}。`;
+  if (p === 'yong') return 'ㄩㄥ 沒有聲母時寫成 yong。';
+  if (/^yu/.test(p)) return `ㄩ 開頭又沒有聲母，寫成 yu：${z} → ${p}。`;
+  if (/^y/.test(p)) return `ㄧ 開頭又沒有聲母，i 改寫成 y：${z} → ${p}。`;
+  if (/^w/.test(p)) return `ㄨ 開頭又沒有聲母，u 改寫成 w：${z} → ${p}。`;
+  if (/iu$/.test(p)) return `ㄧㄡ 接在聲母後面縮寫成 iu：${z} → ${p}。`;
+  if (/ui$/.test(p)) return `ㄨㄟ 接在聲母後面縮寫成 ui：${z} → ${p}。`;
+  if (/un$/.test(p)) return `ㄨㄣ 接在聲母後面縮寫成 un：${z} → ${p}。`;
+  if (/iong$/.test(p)) return `ㄩㄥ 拼成 iong：${z} → ${p}。`;
+  if (/ong$/.test(p)) return `ㄨㄥ 拼成 ong：${z} → ${p}。`;
+  if (/in$/.test(p)) return `ㄧㄣ 拼成 in，不是 ien：${z} → ${p}。`;
+  if (/ing$/.test(p)) return `ㄧㄥ 拼成 ing，不是 ieng：${z} → ${p}。`;
+  return `${z} → ${p}。`;
+}
+
+// ---------- 進度（只存在這台瀏覽器） ----------
+const KEY = 'pinyin-steps';
+let progress = { done: {}, all: false };
+try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && s.done) progress = s; } catch (e) {}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(progress)); } catch (e) {} };
+const isDone = i => progress.done[LESSONS[i].id] != null;
+const unlocked = i => {
+  if (progress.all || i === 0) return true;
+  if (LESSONS[i].id === 'mix') return Object.keys(progress.done).length > 0;
+  return isDone(i - 1);
+};
+
+const state = { view: 'lesson', li: 0, tab: 'learn', toneOn: true };
+state.li = Math.max(0, LESSONS.findIndex((l, i) => l.id !== 'mix' && unlocked(i) && !isDone(i)));
+let S = null; // 練習中的 session
+
+// ---------- 小工具 ----------
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const canSpeak = 'speechSynthesis' in window;
+const SPEAK_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a10 10 0 0 1 0 14"/></svg>';
+function speak(text) {
+  if (!canSpeak || !text) return;
+  try {
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'zh-TW'; u.rate = 0.8;
+    const v = speechSynthesis.getVoices().find(v => /zh[-_]TW/i.test(v.lang));
+    if (v) u.voice = v;
+    speechSynthesis.speak(u);
+  } catch (e) {}
+}
+const sayBtn = text => canSpeak && text ? `<button class="say" data-say="${esc(text)}" aria-label="播放「${esc(text)}」的讀音">${SPEAK_SVG}</button>` : '';
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+
+const needsTone = it => state.toneOn && it.li >= TONE_IDX && it.syl.some(s => /[1-5]$/.test(s));
+const segsOf = it => it.syl.map(s => needsTone(it) ? s : s.replace(/[1-5]$/, ''));
+const targetOf = it => segsOf(it).join('');
+
+// ---------- 畫面 ----------
+function renderHeader() {
+  const total = LESSONS.filter(l => l.id !== 'mix').length;
+  const done = LESSONS.filter((l, i) => l.id !== 'mix' && isDone(i)).length;
+  $('#meter').innerHTML = `已走 <b>${done}</b> / ${total} 步`;
+  $('#v-lesson').setAttribute('aria-pressed', state.view === 'lesson');
+  $('#v-table').setAttribute('aria-pressed', state.view === 'table');
+}
+
+function renderTrail() {
+  let n = 0;
+  $('#trail').innerHTML = LESSONS.map((l, i) => {
+    const mix = l.id === 'mix';
+    const label = mix ? '★' : ++n;
+    const cls = ['step', isDone(i) ? 'done' : '', state.view === 'lesson' && state.li === i ? 'on' : ''].join(' ');
+    const best = progress.done[l.id];
+    return `<li><button class="${cls}" data-li="${i}" ${unlocked(i) ? '' : 'disabled'} aria-current="${state.li === i}">
+      <span class="node">${isDone(i) && !mix ? '✓' : label}</span>
+      <span><span class="step-t">${esc(l.title)}</span><span class="step-s">${esc(l.sub)}${best != null && !mix ? ` · 最佳 ${Math.round(best * 100)}%` : ''}</span></span>
+    </button></li>`;
+  }).join('');
+  $('#trailFoot').innerHTML = progress.all
+    ? '已解鎖全部步驟。'
+    : `每一步答對 ${PASS * 100}% 才會開下一步。<br><button class="linkbtn" id="unlockAll">已經會了？直接解鎖全部</button>`;
+}
+
+function render() {
+  renderHeader(); renderTrail();
+  if (state.view === 'table') return renderTable();
+  if (state.tab === 'practice' && S) return renderPractice();
+  if (state.tab === 'result' && S) return renderResult();
+  renderLearn();
+}
+
+function lessonHead(l) {
+  const i = LESSONS.indexOf(l);
+  const stepNo = l.id === 'mix' ? '最後一關' : `第 ${i + 1} 步`;
+  return `<p class="eyebrow">${stepNo} · ${esc(l.sub)}</p><h2>${esc(l.title)}</h2>
+    <div class="tabs" role="tablist">
+      <button role="tab" data-tab="learn" aria-selected="${state.tab === 'learn'}">學習</button>
+      <button role="tab" data-tab="practice" aria-selected="${state.tab !== 'learn'}">打字練習</button>
+    </div>`;
+}
+
+function poolFor(l) {
+  if (l.id !== 'mix') return l.pool;
+  const p = LESSONS.filter((x, i) => x.id !== 'mix' && (isDone(i) || progress.all)).flatMap(x => x.pool);
+  return p.length ? p : LESSONS[0].pool;
+}
+
+function renderLearn() {
+  const l = LESSONS[state.li];
+  const cards = l.rows.map(r => {
+    const e = r.exItem;
+    return `<div class="card">
+      <div class="map"><span class="zy">${esc(r.z)}</span><span class="arrow">→</span><span class="py">${esc(r.p)}</span></div>
+      ${e ? `<div class="ex"><span class="han">${esc(e.h)}</span><span class="py">${esc(pyOf(e))}</span><span class="zy">${esc(zyList(e).join(' '))}</span>${sayBtn(e.h)}</div>` : ''}
+      ${r.note ? `<p class="note">${esc(r.note)}</p>` : ''}
+    </div>`;
+  }).join('');
+  const mixInfo = l.id === 'mix' ? `<p class="note">目前題庫：${poolFor(l).length} 題，來自你完成的步驟。</p>` : '';
+  $('#main').innerHTML = `${lessonHead(l)}
+    <p class="lede">${esc(l.intro)}</p>
+    ${cards ? `<div class="cards">${cards}</div>` : mixInfo}
+    ${l.traps.length ? `<div class="traps"><h3>台灣人最容易打錯</h3><ul>${l.traps.map(t => `<li>${esc(t)}</li>`).join('')}</ul></div>` : ''}
+    <div class="go"><button class="btn" data-act="start">開始打字練習</button>
+    <small>${l.id === 'mix' ? '15' : '12'} 題 · 第一次就打對才算分 · ${PASS * 100}% 過關</small></div>`;
+}
+
+// ---------- 打字練習 ----------
+const KB = [
+  ['1ㄅ', '2ㄉ', '3ˇ', '4ˋ', '5ㄓ', '6ˊ', '7˙', '8ㄚ', '9ㄞ', '0ㄢ'],
+  ['qㄆ', 'wㄊ', 'eㄍ', 'rㄐ', 'tㄔ', 'yㄗ', 'uㄧ', 'iㄛ', 'oㄟ', 'pㄣ'],
+  ['aㄇ', 'sㄋ', 'dㄎ', 'fㄑ', 'gㄕ', 'hㄘ', 'jㄨ', 'kㄜ', 'lㄠ'],
+  ['zㄈ', 'xㄌ', 'cㄏ', 'vㄒ', 'bㄖ', 'nㄙ', 'mㄩ'],
+];
+const kbHTML = () => `<div class="kbd" aria-hidden="true">${KB.map(r => `<div class="krow">${r.map(k =>
+  `<span class="k" data-k="${k[0]}"><span class="l">${k[0]}</span><span class="z">${k.slice(1)}</span>${k[0] === 'v' ? '<span class="u">ü</span>' : ''}</span>`).join('')}</div>`).join('')}</div>
+  <p class="kcap">鍵帽上的小字是你熟悉的大千注音鍵位。打錯時，下一個該按的鍵會亮起來。</p>`;
+
+function startPractice() {
+  const l = LESSONS[state.li];
+  const n = l.id === 'mix' ? 15 : 12;
+  const pool = poolFor(l);
+  let items = [];
+  while (items.length < n) {
+    let batch = shuffle(pool);
+    if (items.length && batch[0] === items[items.length - 1] && batch.length > 1) batch.push(batch.shift());
+    items = items.concat(batch);
+  }
+  S = { li: state.li, items: items.slice(0, n), i: 0, results: [], t0: Date.now() };
+  resetItem();
+  state.tab = 'practice';
+  render();
+}
+function resetItem() { Object.assign(S, { value: '', wrong: false, revealed: false, errAt: null, locked: false }); }
+const cur = () => S.items[S.i];
+
+function renderPractice() {
+  const l = LESSONS[S.li];
+  const it = cur();
+  const toneAvail = S.li >= TONE_IDX || l.id === 'mix';
+  const prompt = it.h
+    ? [...it.h].map((c, i) => `<span class="glyph"><span class="han">${esc(c)}</span><span class="zy">${esc(zyList(it)[i] || '')}</span></span>`).join('')
+    : `<span class="zy solo">${esc(it.zs[0])}</span>`;
+  const askText = it.h ? (needsTone(it) ? '打出拼音，每個音節後面加聲調數字' : '打出拼音（這一步不用打聲調）') : '這個注音的拼音是？';
+  $('#main').innerHTML = `${lessonHead(l)}
+    <div class="pbar">
+      <span>第 ${S.i + 1} / ${S.items.length} 題</span>
+      <span class="bar"><i style="width:${S.i / S.items.length * 100}%"></i></span>
+      <label class="toggle ${toneAvail ? '' : 'off'}" title="${toneAvail ? '' : '第 4 步開始練聲調'}">
+        <input type="checkbox" id="toneOn" ${state.toneOn && toneAvail ? 'checked' : ''} ${toneAvail ? '' : 'disabled'}> 打聲調 1–5
+      </label>
+    </div>
+    <div class="stage" id="stage">
+      <div class="prompt">${prompt}</div>
+      <p class="ask">${askText}</p>
+      <div class="typed" id="typed"></div>
+      <div class="answer" id="answer"></div>
+      <input id="ime" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" inputmode="latin" aria-label="在這裡輸入拼音">
+    </div>
+    <div id="hint" class="hint" hidden></div>
+    <div class="row-actions">
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        ${it.h && canSpeak ? `<button class="btn ghost" data-say="${esc(it.h)}">聽讀音</button>` : ''}
+        <button class="btn ghost" data-act="reveal">不會，看答案</button>
+      </div>
+      <button class="btn ghost" data-act="quit">結束練習</button>
+    </div>
+    ${kbHTML()}`;
+  const inp = $('#ime');
+  inp.value = S.value;
+  inp.addEventListener('input', onType);
+  inp.addEventListener('compositionstart', () => { S.composing = true; warnInput(true); });
+  inp.addEventListener('compositionend', () => { S.composing = false; inp.value = S.value; paintTyped(); });
+  inp.addEventListener('keydown', e => { if (e.key === 'Process' || e.keyCode === 229) warnInput(true); });
+  inp.focus({ preventScroll: true });
+  paintTyped();
+}
+
+function paintTyped(win) {
+  const tgt = targetOf(cur());
+  const v = S.value;
+  let k = 0; while (k < v.length && v[k] === tgt[k]) k++;
+  const el = $('#typed');
+  if (win) { el.className = 'typed win'; el.textContent = v; return; }
+  el.className = 'typed';
+  el.innerHTML = v
+    ? `<span class="ok">${esc(v.slice(0, k))}</span><span class="bad">${esc(v.slice(k))}</span><span class="caret"></span>`
+    : `<span class="ph">點這裡開始打字</span><span class="caret"></span>`;
+}
+
+function lightKey(ch) {
+  document.querySelectorAll('.k.next').forEach(e => e.classList.remove('next'));
+  if (ch) { const e = document.querySelector(`.k[data-k="${ch}"]`); if (e) e.classList.add('next'); }
+}
+
+function hintAt(it, k) {
+  const segs = segsOf(it);
+  let pos = 0, si = 0;
+  for (; si < segs.length; si++) { if (k < pos + segs[si].length) break; pos += segs[si].length; }
+  si = Math.min(si, segs.length - 1);
+  const tgt = targetOf(it);
+  const ch = tgt[k];
+  if (ch === undefined) return '打太多了，把多出來的字母刪掉。';
+  if (/\d/.test(ch)) {
+    const t = +ch, name = ['', '一', '二', '三', '四', '輕'][t];
+    const who = it.h[si] ? `「${it.h[si]}」` : '這個音節';
+    return `${who}是${name}聲${t < 5 ? `（${['', 'ˉ', 'ˊ', 'ˇ', 'ˋ'][t]}）` : ''}，在音節後面打 <kbd>${t}</kbd>。`;
+  }
+  const p = it.syl[si].replace(/[1-5]$/, '');
+  return `${esc(ruleFor(it.zs[si], p))} 下一個字母是 <kbd>${ch}</kbd>。`;
+}
+
+function warnInput(ime) {
+  const hint = $('#hint');
+  if (!hint) return;
+  hint.hidden = false; hint.className = 'hint';
+  hint.innerHTML = ime
+    ? '現在是<b>注音（中文）輸入法</b>，打的字不會被收到。請切換成英文輸入：Mac 按 <kbd>Caps Lock</kbd> 或 <kbd>Shift</kbd>，Windows 按 <kbd>Shift</kbd>。'
+    : '這裡只能打英文字母和數字 1–5，其他符號不會被收到。ü 請打 <kbd>v</kbd>。';
+  const typed = $('#typed');
+  if (typed) { typed.classList.remove('shake'); void typed.offsetWidth; typed.classList.add('shake'); }
+}
+
+function onType(e) {
+  if (!S || S.locked) { e.target.value = S ? S.value : ''; return; }
+  if (e.isComposing || S.composing) { warnInput(true); return; }
+  const it = cur();
+  const tgt = targetOf(it);
+  const raw = e.target.value.toLowerCase().replace(/ü/g, 'v').replace(/[\s']/g, '');
+  if (/[^\x00-\x7f]/.test(raw)) { e.target.value = S.value; return warnInput(true); }
+  if (/[^a-z0-9]/.test(raw)) { e.target.value = S.value; return warnInput(false); }
+  let v = raw.slice(0, tgt.length + 3);
+  e.target.value = v;
+  S.value = v;
+  let k = 0; while (k < v.length && v[k] === tgt[k]) k++;
+  const hint = $('#hint');
+  if (k < v.length) {
+    S.wrong = true;
+    if (S.errAt !== k) { S.errAt = k; }
+    hint.hidden = false; hint.className = 'hint';
+    hint.innerHTML = hintAt(it, k) + ' 先按退格鍵刪掉打錯的部分。';
+    lightKey(tgt[k]);
+  } else {
+    S.errAt = null;
+    if (!S.revealed) hint.hidden = true;
+    lightKey(S.revealed ? tgt[k] : null);
+    if (v === tgt) return correct();
+  }
+  paintTyped();
+}
+
+function correct() {
+  const it = cur();
+  S.locked = true;
+  S.results.push({ it, ok: !S.wrong });
+  paintTyped(true);
+  $('#answer').textContent = pyOf(it);
+  lightKey(null);
+  setTimeout(() => {
+    if (!S) return;
+    S.i++;
+    if (S.i >= S.items.length) return finish();
+    resetItem();
+    renderPractice();
+  }, 750);
+}
+
+function reveal() {
+  const it = cur();
+  S.wrong = true; S.revealed = true;
+  const tgt = targetOf(it);
+  const rules = [...new Set(it.syl.map((s, i) => ruleFor(it.zs[i], s.replace(/[1-5]$/, ''))))];
+  const hint = $('#hint');
+  hint.hidden = false; hint.className = 'hint reveal';
+  hint.innerHTML = `答案是 <b>${esc(pyOf(it))}</b>，要打 <kbd>${esc(tgt)}</kbd>。${rules.map(esc).join(' ')} 現在照著打一次，這題不計分。`;
+  let k = 0; while (k < S.value.length && S.value[k] === tgt[k]) k++;
+  lightKey(tgt[k]);
+  $('#ime').focus({ preventScroll: true });
+}
+
+function finish() {
+  const ok = S.results.filter(r => r.ok).length;
+  S.acc = ok / S.results.length;
+  S.secs = Math.round((Date.now() - S.t0) / 1000);
+  const l = LESSONS[S.li];
+  S.passed = S.acc >= PASS;
+  if (S.passed) { progress.done[l.id] = Math.max(progress.done[l.id] || 0, S.acc); save(); }
+  state.tab = 'result';
+  render();
+}
+
+function renderResult() {
+  const l = LESSONS[S.li];
+  const ok = S.results.filter(r => r.ok).length;
+  const seen = new Set();
+  const misses = S.results.filter(r => !r.ok && !seen.has(r.it) && seen.add(r.it));
+  const next = LESSONS.findIndex((x, i) => i > S.li && unlocked(i) && !isDone(i));
+  const mm = `${Math.floor(S.secs / 60)}:${String(S.secs % 60).padStart(2, '0')}`;
+  $('#main').innerHTML = `${lessonHead(l)}
+    <div class="score">
+      <div class="big ${S.passed ? 'py' : 'zy'}">${Math.round(S.acc * 100)}%</div>
+      <div>
+        <span class="pill ${S.passed ? 'pass' : 'retry'}">${S.passed ? '過關' : `還差一點，${PASS * 100}% 過關`}</span>
+        <p class="note" style="margin-top:6px">第一次就打對 ${ok} / ${S.results.length} 題 · 用時 ${mm}</p>
+      </div>
+    </div>
+    ${misses.length ? `<h3 class="eyebrow" style="margin-top:24px">這幾題再看一眼</h3><ul class="misses">${misses.map(r =>
+      `<li>${r.it.h ? `<span class="han">${esc(r.it.h)}</span>` : ''}<span class="zy">${esc(zyList(r.it).join(' '))}</span><span class="py">${esc(pyOf(r.it))}</span></li>`).join('')}</ul>` : '<p class="lede" style="margin-top:20px">全部一次打對。</p>'}
+    <div class="go">
+      ${S.passed && next >= 0 && l.id !== 'mix' ? `<button class="btn" data-go="${next}">下一步：${esc(LESSONS[next].title)}</button>` : ''}
+      <button class="btn ${S.passed && next >= 0 && l.id !== 'mix' ? 'ghost' : ''}" data-act="start">再練一次</button>
+      <button class="btn ghost" data-tab="learn">回到學習</button>
+    </div>`;
+}
+
+// ---------- 對照表 ----------
+const TABLE = [
+  ['聲母', [['ㄅ', 'b'], ['ㄆ', 'p'], ['ㄇ', 'm'], ['ㄈ', 'f'], ['ㄉ', 'd'], ['ㄊ', 't'], ['ㄋ', 'n'], ['ㄌ', 'l'], ['ㄍ', 'g'], ['ㄎ', 'k'], ['ㄏ', 'h'],
+    ['ㄐ', 'j'], ['ㄑ', 'q', '', 1], ['ㄒ', 'x', '', 1], ['ㄓ', 'zh', '單獨：zhi', 1], ['ㄔ', 'ch', '單獨：chi', 1], ['ㄕ', 'sh', '單獨：shi', 1], ['ㄖ', 'r', '單獨：ri', 1],
+    ['ㄗ', 'z', '單獨：zi', 1], ['ㄘ', 'c', '單獨：ci', 1], ['ㄙ', 's', '單獨：si', 1]]],
+  ['韻母', [['ㄚ', 'a'], ['ㄛ', 'o'], ['ㄜ', 'e', '', 1], ['ㄝ', 'ê', '多出現在 ie、üe'], ['ㄞ', 'ai'], ['ㄟ', 'ei'], ['ㄠ', 'ao', '', 1], ['ㄡ', 'ou'],
+    ['ㄢ', 'an'], ['ㄣ', 'en'], ['ㄤ', 'ang'], ['ㄥ', 'eng'], ['ㄦ', 'er'], ['ㄧ', 'i', '單獨：yi'], ['ㄨ', 'u', '單獨：wu'], ['ㄩ', 'ü', '打 v · 單獨：yu', 1]]],
+  ['ㄧ 開頭', [['ㄧㄚ', 'ia', '單獨：ya'], ['ㄧㄝ', 'ie', '單獨：ye'], ['ㄧㄠ', 'iao', '單獨：yao'], ['ㄧㄡ', 'iu', '單獨：you', 1], ['ㄧㄢ', 'ian', '單獨：yan'],
+    ['ㄧㄣ', 'in', '單獨：yin', 1], ['ㄧㄤ', 'iang', '單獨：yang'], ['ㄧㄥ', 'ing', '單獨：ying', 1]]],
+  ['ㄨ 開頭', [['ㄨㄚ', 'ua', '單獨：wa'], ['ㄨㄛ', 'uo', '單獨：wo'], ['ㄨㄞ', 'uai', '單獨：wai'], ['ㄨㄟ', 'ui', '單獨：wei', 1], ['ㄨㄢ', 'uan', '單獨：wan'],
+    ['ㄨㄣ', 'un', '單獨：wen', 1], ['ㄨㄤ', 'uang', '單獨：wang'], ['ㄨㄥ', 'ong', '單獨：weng', 1]]],
+  ['ㄩ 開頭', [['ㄩㄝ', 'üe', 'jqx 後：ue · 單獨：yue', 1], ['ㄩㄢ', 'üan', 'jqx 後：uan · 單獨：yuan', 1], ['ㄩㄣ', 'ün', 'jqx 後：un · 單獨：yun', 1], ['ㄩㄥ', 'iong', '單獨：yong', 1]]],
+  ['聲調', [['ˉ', 'ā', '一聲 · 打 1'], ['ˊ', 'á', '二聲 · 打 2'], ['ˇ', 'ǎ', '三聲 · 打 3'], ['ˋ', 'à', '四聲 · 打 4'], ['˙', '不標', '輕聲 · 打 5']]],
+];
+function renderTable() {
+  $('#main').innerHTML = `<p class="eyebrow">隨時回來查</p><h2>注音拼音對照表</h2>
+    <p class="lede">左上是注音，下面是拼音。「單獨」指前面沒有聲母、自己成一個字時的寫法。</p>
+    <div class="legend"><i></i>和注音直覺不同，最容易打錯</div>
+    ${TABLE.map(([name, cells]) => `<section class="tgroup"><h3>${name}</h3><div class="tgrid">${cells.map(([z, p, n, trap]) =>
+      `<div class="cell ${trap ? 'trap' : ''}"><span class="zy">${z}</span><span class="py">${p}</span>${n ? `<small>${n}</small>` : ''}</div>`).join('')}</div></section>`).join('')}`;
+}
+
+// ---------- 事件 ----------
+document.addEventListener('click', e => {
+  const t = e.target.closest('button, .stage');
+  if (!t) return;
+  if (t.classList.contains('stage')) { const i = $('#ime'); if (i) i.focus({ preventScroll: true }); return; }
+  if (t.dataset.say) return speak(t.dataset.say);
+  if (t.id === 'v-lesson') { state.view = 'lesson'; return render(); }
+  if (t.id === 'v-table') { state.view = 'table'; return render(); }
+  if (t.id === 'unlockAll') { progress.all = true; save(); return render(); }
+  if (t.dataset.li != null) { state.view = 'lesson'; state.li = +t.dataset.li; state.tab = 'learn'; S = null; render(); window.scrollTo({ top: 0 }); return; }
+  if (t.dataset.go != null) { state.li = +t.dataset.go; state.tab = 'learn'; S = null; render(); window.scrollTo({ top: 0 }); return; }
+  if (t.dataset.tab === 'learn') { state.tab = 'learn'; S = null; return render(); }
+  if (t.dataset.tab === 'practice' || t.dataset.act === 'start') return startPractice();
+  if (t.dataset.act === 'reveal') return reveal();
+  if (t.dataset.act === 'quit') { state.tab = 'learn'; S = null; return render(); }
+});
+document.addEventListener('change', e => {
+  if (e.target.id === 'toneOn') { state.toneOn = e.target.checked; S.value = ''; S.errAt = null; renderPractice(); }
+});
+document.addEventListener('keydown', e => {
+  const k = document.querySelector(`.k[data-k="${CSS.escape((e.key || '').toLowerCase())}"]`);
+  if (k) { k.classList.add('press'); setTimeout(() => k.classList.remove('press'), 120); }
+});
+
+render();
+</script>
+</body>
+</html>
