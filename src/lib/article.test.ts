@@ -9,17 +9,27 @@ describe('articles', () => {
   });
 
   it('skips punctuation when picking characters to type', () => {
-    const a = buildArticle({ id: 't', title: 't', level: '', text: '早安！謝謝。', pinyin: 'zao3 an1 xie4 xie4' });
+    const a = buildArticle({
+      id: 't',
+      title: 't',
+      level: '入門',
+      topic: '',
+      added: '',
+      text: '早安！謝謝。',
+      pinyin: 'zao3 an1 xie4 xie4',
+    });
     expect(a.slots).toEqual([0, 1, 3, 4]);
     expect(a.groups).toEqual([[0], [1, 2], [3], [4, 5]]);
     expect(a.chars[3].target).toEqual({ h: '謝', syl: ['xie4'], zs: ['ㄒㄧㄝ'] });
   });
 
   it('reports a missing or extra syllable', () => {
-    expect(() => buildArticle({ id: 't', title: 't', level: '', text: '早安', pinyin: 'zao3' })).toThrow('缺少拼音');
-    expect(() => buildArticle({ id: 't', title: 't', level: '', text: '早', pinyin: 'zao3 an1' })).toThrow(
-      '拼音有 2 個',
-    );
+    expect(() =>
+      buildArticle({ id: 't', title: 't', level: '入門', topic: '', added: '', text: '早安', pinyin: 'zao3' }),
+    ).toThrow('缺少拼音');
+    expect(() =>
+      buildArticle({ id: 't', title: 't', level: '入門', topic: '', added: '', text: '早', pinyin: 'zao3 an1' }),
+    ).toThrow('拼音有 2 個');
   });
 
   it('has unique ids', () => {

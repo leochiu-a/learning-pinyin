@@ -76,7 +76,15 @@ function ArticlePage({
       <div className="lhead">
         <div>
           <p className="eyebrow">
-            <Link to="/articles">打文章</Link> · {article.level} · {article.slots.length} 字
+            <Link to="/articles">打文章</Link> · {article.topic} · {article.level} · {article.slots.length} 字
+            {article.source && (
+              <>
+                {' · 參考 '}
+                <a href={article.source.url} target="_blank" rel="noreferrer">
+                  {article.source.name}
+                </a>
+              </>
+            )}
           </p>
           <h2>{article.title}</h2>
         </div>
