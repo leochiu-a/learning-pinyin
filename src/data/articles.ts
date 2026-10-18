@@ -142,4 +142,86 @@ export const ARTICLES: Article[] = [
     pinyin: `yuan3 shang4 han2 shan1 shi2 jing4 xie2 bai2 yun2 sheng1 chu4 you3 ren2 jia1
       ting2 che1 zuo4 ai4 feng1 lin2 wan3 shuang1 ye4 hong2 yu2 er4 yue4 hua1`,
   },
+  {
+    id: 'kaohsiung-bike-tour',
+    title: '騎單車逛高雄',
+    level: '進階',
+    topic: '台灣',
+    added: '2026-10-18',
+    source: { name: '中央社', url: 'https://www.cna.com.tw/news/aloc/202610180098.aspx' },
+    text: '高雄最近辦了單車小旅行，帶大家騎大約八公里，一路經過濕地公園、老車站跟客家文化園區。十月底還有鹹酥雞嘉年華。',
+    pinyin: `gao1 xiong2 zui4 jin4 ban4 le5 dan1 che1 xiao3 lv3 xing2 dai4 da4 jia1 qi2 da4 yue1 ba1 gong1 li3
+      yi1 lu4 jing1 guo4 shi1 di4 gong1 yuan2 lao3 che1 zhan4 gen1 ke4 jia1 wen2 hua4 yuan2 qu1
+      shi2 yue4 di3 hai2 you3 xian2 su1 ji1 jia1 nian2 hua2`,
+  },
+  {
+    id: 'napoleon-cipher',
+    title: '兩百年的密碼信',
+    level: '進階',
+    topic: '時事',
+    added: '2026-10-18',
+    source: { name: '中央社', url: 'https://www.cna.com.tw/news/ait/202610160331.aspx' },
+    text: '拿破崙時代有一封用密碼寫的信，兩百多年來都沒有人看得懂。最近有工程師用人工智慧幫忙，只花了六個小時就解開了。',
+    pinyin: `na2 po4 lun2 shi2 dai4 you3 yi1 feng1 yong4 mi4 ma3 xie3 de5 xin4
+      liang3 bai3 duo1 nian2 lai2 dou1 mei2 you3 ren2 kan4 de5 dong3
+      zui4 jin4 you3 gong1 cheng2 shi1 yong4 ren2 gong1 zhi4 hui4 bang1 mang2
+      zhi3 hua1 le5 liu4 ge4 xiao3 shi2 jiu4 jie3 kai1 le5`,
+  },
+  {
+    id: 'mars-moon-sample',
+    title: '去火星的衛星撿石頭',
+    level: '進階',
+    topic: '時事',
+    added: '2026-10-18',
+    source: { name: '中央社', url: 'https://www.cna.com.tw/news/ait/202610180039.aspx' },
+    text: '日本準備發射探測器，去火星的衛星火衛一採集樣本。如果成功，這會是第一次從火星附近帶東西回地球，也許能幫我們了解太陽系是怎麼來的。',
+    pinyin: `ri4 ben3 zhun3 bei4 fa1 she4 tan4 ce4 qi4 qu4 huo3 xing1 de5 wei4 xing1 huo3 wei4 yi1 cai3 ji2 yang4 ben3
+      ru2 guo3 cheng2 gong1 zhe4 hui4 shi4 di4 yi1 ci4 cong2 huo3 xing1 fu4 jin4 dai4 dong1 xi5 hui2 di4 qiu2
+      ye3 xu3 neng2 bang1 wo3 men5 liao3 jie3 tai4 yang2 xi4 shi4 zen3 me5 lai2 de5`,
+  },
+  {
+    id: 'formosat-yushan',
+    title: '衛星看見玉山石碑',
+    level: '進階',
+    topic: '台灣',
+    added: '2026-10-18',
+    source: { name: '中央社', url: 'https://www.cna.com.tw/news/ait/202610150352.aspx' },
+    text: '台灣自己做的福衛八號衛星，已經開始從太空拍照。它拍得非常清楚，連玉山主峰上的石碑都看得出來。',
+    pinyin: `tai2 wan1 zi4 ji3 zuo4 de5 fu2 wei4 ba1 hao4 wei4 xing1 yi3 jing1 kai1 shi3 cong2 tai4 kong1 pai1 zhao4
+      ta1 pai1 de5 fei1 chang2 qing1 chu3 lian2 yu4 shan1 zhu3 feng1 shang4 de5 shi2 bei1 dou1 kan4 de5 chu1 lai2`,
+  },
+  {
+    id: 'kinmen-tunnel-music',
+    title: '坑道裡的音樂會',
+    level: '進階',
+    topic: '台灣',
+    added: '2026-10-18',
+    source: { name: '中央社', url: 'https://www.cna.com.tw/news/acul/202610170076.aspx' },
+    text: '金門的坑道以前是打仗用的，現在卻變成聽音樂的地方。坑道音樂節已經辦了十八年，累計有超過兩萬五千人來聽。',
+    pinyin: `jin1 men2 de5 keng1 dao4 yi3 qian2 shi4 da3 zhang4 yong4 de5 xian4 zai4 que4 bian4 cheng2 ting1 yin1 yue4 de5 di4 fang1
+      keng1 dao4 yin1 yue4 jie2 yi3 jing1 ban4 le5 shi2 ba1 nian2 lei3 ji4 you3 chao1 guo4 liang3 wan4 wu3 qian1 ren2 lai2 ting1`,
+  },
+  {
+    id: 'chongyang',
+    title: '重陽節',
+    level: '入門',
+    topic: '生活',
+    added: '2026-10-18',
+    text: '每年農曆九月九日是重陽節，也是敬老的日子。很多地方會在這天辦活動祝福長輩，也有人會陪家裡的老人去爬山。',
+    pinyin: `mei3 nian2 nong2 li4 jiu3 yue4 jiu3 ri4 shi4 chong2 yang2 jie2 ye3 shi4 jing4 lao3 de5 ri4 zi5
+      hen3 duo1 di4 fang1 hui4 zai4 zhe4 tian1 ban4 huo2 dong4 zhu4 fu2 zhang3 bei4
+      ye3 you3 ren2 hui4 pei2 jia1 li3 de5 lao3 ren2 qu4 pa2 shan1`,
+  },
+  {
+    id: 'ohtani-jersey',
+    title: '一件很貴的球衣',
+    level: '進階',
+    topic: '時事',
+    added: '2026-10-18',
+    source: { name: '中央社', url: 'https://www.cna.com.tw/news/aspt/202610180139.aspx' },
+    text: '日本球星大谷翔平穿過的一件球衣，最近在網路拍賣賣出兩百多萬美元，大約是新台幣六千五百多萬元，創下他球衣拍賣的最高紀錄。',
+    pinyin: `ri4 ben3 qiu2 xing1 da4 gu3 xiang2 ping2 chuan1 guo4 de5 yi1 jian4 qiu2 yi1
+      zui4 jin4 zai4 wang3 lu4 pai1 mai4 mai4 chu1 liang3 bai3 duo1 wan4 mei3 yuan2
+      da4 yue1 shi4 xin1 tai2 bi4 liu4 qian1 wu3 bai3 duo1 wan4 yuan2 chuang4 xia4 ta1 qiu2 yi1 pai1 mai4 de5 zui4 gao1 ji4 lu4`,
+  },
 ];
